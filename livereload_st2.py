@@ -1,23 +1,39 @@
-import sublime, sublime_plugin,threading,json,os,threading,subprocess,socket      
+import sublime,sublime_plugin,threading,json,os,threading,subprocess,socket      
 from base64 import b64encode, b64decode
 # python 2.6 differences
-try:    from hashlib import md5, sha1
+try: 
+    from hashlib import md5, sha1
 except: from md5 import md5; from sha import sha as sha1
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 from struct import pack, unpack_from
-import array, struct,os
+import array, struct, os
+import urllib2
 s2a = lambda s: [ord(c) for c in s]
+
+##LOAD latest livereload.js from github (for v2 of protocol) or if this fails local version
+try:
+    req = urllib2.urlopen(urllib2.Request("http://raw.github.com/livereload/livereload-js/master/dist/livereload.js"))
+    source_livereload_js = req.read()
+    if not "http://livereload.com/protocols/official-6" in source_livereload_js:
+        raise Exception("Something wrong with download!")
+except Exception, u:
+    print u
+    try:
+        path = os.path.join(sublime.packages_path(), "LiveReload")
+        local = open(os.path.join(path, "livereload.js"), "rU")
+        source_livereload_js = local.read()
+    except IOError, e:
+        print e
+        sublime.error_message("livereload.js is missing from LiveReload package install")
+
 
 class LiveReload(threading.Thread):
 
-    def __init__(self):
+    def run(self):
       global  LivereloadFactory
       threading.Thread.__init__(self)
       settings = sublime.load_settings('LiveReload.sublime-settings')
       LivereloadFactory = WebSocketServer(settings.get('port'),settings.get('version'))
-
-    def run(self):
-      global  LivereloadFactory
       LivereloadFactory.start()
 
 class LiveReloadChange(sublime_plugin.EventListener):
@@ -103,18 +119,16 @@ class WebSocketServer:
         self.s.bind(('', self.port))
         self.s.listen(1)
       except Exception, e:
-        pass
+        self.stop()
 
       try:
         while 1:
           conn, addr = self.s.accept()
-          print('Connected by', addr)
           newClient = WebSocketClient(conn, addr, self)
           self.clients.append(newClient)
           newClient.start()
-          sublime.set_timeout(lambda: sublime.status_message("New LiveReload client connected"), 100)
       except Exception, e:
-        print e
+        self.stop()
 
     def send_all(self, data):
       """
@@ -158,12 +172,9 @@ Sec-WebSocket-Protocol: base64\r
 
     def run(self):
 
-        
-        #data = self.s.recv(1024)
         wsh = WSRequestHandler(self.s, self.addr, False)
         h = self.headers = wsh.headers
         path = self.path = wsh.path
-
         prot = 'WebSocket-Protocol'
         protocols = h.get('Sec-'+prot, h.get(prot, '')).split(',')
         ver = h.get('Sec-WebSocket-Version')
@@ -329,7 +340,6 @@ Sec-WebSocket-Protocol: base64\r
         """
         Close this connection
         """
-        print('Client closed: ', self.addr)
         self.server.remove(self)
         self.s.close()
 
@@ -338,20 +348,31 @@ Sec-WebSocket-Protocol: base64\r
         Send a message to this client
         """
         msg = WebSocketClient.encode_hybi(msg, 0x1, False)
-        print msg
         self.s.send(msg[0])
 
     def onreceive(self, data):
         """
         Event called when a message is received from this client
         """
-        print data
+        try:
+            print data
+            if "payload" in data:
+                print "payload true"
+                if "hello" in data.get("payload"):
+                    sublime.set_timeout(lambda: sublime.status_message("New LiveReload v2 client connected"), 100)
+                    self.send('{"command":"hello","protocols":["http://livereload.com/protocols/connection-check-1"]}')
+                else:
+                    sublime.set_timeout(lambda: sublime.status_message("New LiveReload v1 client connected"), 100)
+                    self.send("!!ver:" + str(self.server.version))
+        except Exception, e:
+            print e
+
 
     def new_client(self):
         """
         Event called when handshake is compleated
         """
-        self.send("!!ver:"+str(self.server.version))
+        #self.send("!!ver:"+str(self.server.version))
 
     def _clean(self, msg):
         """
@@ -361,10 +382,11 @@ Sec-WebSocket-Protocol: base64\r
         msg = msg.replace(b'\xff', b'', 1)
         return msg
 
+
 # HTTP handler with WebSocket upgrade support
 class WSRequestHandler(SimpleHTTPRequestHandler):
-    def __init__(self, req, addr, only_upgrade=False):
-        self.only_upgrade = only_upgrade # only allow upgrades
+    def __init__(self, req, addr, only_upgrade=True):
+        self.only_upgrade = only_upgrade  # only allow upgrades
         SimpleHTTPRequestHandler.__init__(self, req, addr, object())
 
     def do_GET(self):
@@ -384,7 +406,22 @@ class WSRequestHandler(SimpleHTTPRequestHandler):
             self.last_code = 405
             self.last_message = "405 Method Not Allowed"
         else:
-            SimpleHTTPRequestHandler.do_GET(self)
+            #Self injecting plugin
+            if "livereload.js" in self.path:
+                self.send_response(200, 'OK')
+                self.send_header('Content-type', 'text/javascript')
+                self.send_header("Content-Length", len(source_livereload_js))
+                self.end_headers()
+                self.wfile.write(bytes(source_livereload_js))
+                return
+            else:
+                #Disable other requests
+                self.send_response(405, 'Method Not Allowed')
+                self.send_header('Content-type', 'text/plain')
+                self.send_header("Content-Length", len("Method Not Allowed"))
+                self.end_headers()
+                self.wfile.write(bytes("Method Not Allowed"))
+                return
 
     def send_response(self, code, message=None):
         # Save the status code

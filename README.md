@@ -1,12 +1,17 @@
 LiveReload for Sublime Text 2
 =========
 
-A web browser page reloading plugin for the [Sublime Text 2](http://sublimetext.com "Sublime Text 2") editor.
+A web browser page reloading plugin for the [Sublime Text 2](http://sublimetext.com "Sublime Text 2") editor. 
 
 Installing
 -----
 
 Install with [Sublime Package Control](http://wbond.net/sublime_packages/package_control "Sublime Package Control"), search for LiveReload and install.
+
+
+Browser extensions
+-----
+You can use both major LiveReload versions. For old one you can find instructions bellow, for new ones please visit [New browser extensions](http://help.livereload.com/kb/general-use/browser-extensions "New browser extensions") or try [self loading version](http://help.livereload.com/kb/general-use/using-livereload-without-browser-extensions "self loading version").
 
 
 ### [Google Chrome extension](https://chrome.google.com/extensions/detail/jnihajbhpnppcggbcgedagnkighmdlei)
