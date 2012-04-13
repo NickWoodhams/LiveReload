@@ -9,7 +9,9 @@ from struct import pack, unpack_from
 import array, struct, os
 import urllib2
 s2a = lambda s: [ord(c) for c in s]
-
+settings = sublime.load_settings('LiveReload.sublime-settings')
+port = settings.get('port')
+version = settings.get('version')
 ##LOAD latest livereload.js from github (for v2 of protocol) or if this fails local version
 try:
     req = urllib2.urlopen(urllib2.Request("http://raw.github.com/livereload/livereload-js/master/dist/livereload.js"))
@@ -32,8 +34,7 @@ class LiveReload(threading.Thread):
     def run(self):
       global  LivereloadFactory
       threading.Thread.__init__(self)
-      settings = sublime.load_settings('LiveReload.sublime-settings')
-      LivereloadFactory = WebSocketServer(settings.get('port'),settings.get('version'))
+      LivereloadFactory = WebSocketServer(port,version)
       LivereloadFactory.start()
 
 class LiveReloadChange(sublime_plugin.EventListener):
@@ -160,7 +161,6 @@ class WebSocketClient(threading.Thread):
 Upgrade: websocket\r
 Connection: Upgrade\r
 Sec-WebSocket-Accept: %s\r
-Sec-WebSocket-Protocol: base64\r
 """
     GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
 
@@ -174,9 +174,6 @@ Sec-WebSocket-Protocol: base64\r
 
         wsh = WSRequestHandler(self.s, self.addr, False)
         h = self.headers = wsh.headers
-        path = self.path = wsh.path
-        prot = 'WebSocket-Protocol'
-        protocols = h.get('Sec-'+prot, h.get(prot, '')).split(',')
         ver = h.get('Sec-WebSocket-Version')
         if ver:
             # HyBi/IETF version of the protocol
@@ -190,16 +187,16 @@ Sec-WebSocket-Protocol: base64\r
                 raise Exception('Unsupported protocol version %s' % ver)
 
             key = h['Sec-WebSocket-Key']
+            print key
             # Generate the hash value for the accept header
             accept = b64encode(sha1(key + self.GUID).digest())
 
             response = self.server_handshake_hybi % accept
-            response += "Sec-WebSocket-Protocol: base64\r\n"
             response += "\r\n"
-
+            print response
             self.s.send(response.encode())
             self.new_client()
-            #self.s.send("!!ver:"+str(self.server.settings.get('version')))
+            
         # Receive and handle data
         while 1:
             try:
@@ -251,7 +248,7 @@ Sec-WebSocket-Protocol: base64\r
         elif payload_len >= 65536:
             header = pack('>BBQ', b1, 127, payload_len)
 
-        #print("Encoded: %s" % repr(header + buf))
+        print("Encoded: %s" % repr(header + buf))
 
         return header + buf, len(header), 0   
             
@@ -360,7 +357,7 @@ Sec-WebSocket-Protocol: base64\r
                 print "payload true"
                 if "hello" in data.get("payload"):
                     sublime.set_timeout(lambda: sublime.status_message("New LiveReload v2 client connected"), 100)
-                    self.send('{"command":"hello","protocols":["http://livereload.com/protocols/connection-check-1"]}')
+                    self.send('{"command":"hello","protocols":["http://livereload.com/protocols/connection-check-1","http://livereload.com/protocols/official-6"]}')
                 else:
                     sublime.set_timeout(lambda: sublime.status_message("New LiveReload v1 client connected"), 100)
                     self.send("!!ver:" + str(self.server.version))
