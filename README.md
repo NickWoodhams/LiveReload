@@ -22,12 +22,12 @@ Click “Install”. Actually, LiveReload does not access your browser history. 
 
 ![](https://github.com/mockko/livereload/raw/master/docs/images/chrome-button.png)
 
+If you want to use it with local files, be sure to enable “Allow access to file URLs” checkbox in Tools > Extensions > LiveReload after installation.
 
 ### Safari extension
 
-Download [LiveReload 1.6.2 extension](https://github.com/downloads/mockko/livereload/LiveReload-1.6.2.safariextz). Double-click it and confirm installation:
-
-![](https://github.com/mockko/livereload/raw/master/docs/images/safari-install-prompt.png)
+For now it only works with self, serving version:
+    <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 
 
 ### [Firefox 4 extension](https://addons.mozilla.org/firefox/addon/livereload/)
