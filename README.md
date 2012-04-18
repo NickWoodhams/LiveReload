@@ -27,6 +27,7 @@ If you want to use it with local files, be sure to enable “Allow access to fil
 ### Safari extension
 
 For now it only works with self, serving version:
+
     <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 
 
