@@ -1,0 +1,10 @@
+[
+    {
+        "caption": "LiveReload: Help",
+        "command": "live_reload_help"
+    },
+    {
+        "caption": "LiveReload: Enable/disable plugins",
+        "command": "live_reload_enable_plugin"
+    }
+]
