@@ -40,12 +40,12 @@ class PluginFactory(type):
         if plugin.__name__ in cls.enabled_plugins:
             cls.enabled_plugins.remove(plugin.__name__)
             sublime.set_timeout(lambda : \
-                                sublime.status_message('%s the LiveReload plugin has been disabled!'
+                                sublime.status_message('"%s" the LiveReload plugin has been disabled!'
                                  % plugin.title), 100)
         else:
             cls.enabled_plugins.append(plugin.__name__)
             sublime.set_timeout(lambda : \
-                                sublime.status_message('%s the LiveReload plugin has been enabled!'
+                                sublime.status_message('"%s" the LiveReload plugin has been enabled!'
                                  % plugin.title), 100)
         cls.settings = \
             sublime.load_settings('LiveReload.sublime-settings')
@@ -69,6 +69,13 @@ class PluginFactory(type):
     def __get__(cls, instance, owner):
         return [p(instance) for p in cls.plugins]
 
+    def dispatch_OnReceive(cls, data, origin):
+        for plugin in cls.plugins:
+            try:
+                plugin.onReceive(data, origin)
+            except Exception, e:
+                print e
+
 
 class PluginClass:
 
@@ -79,6 +86,7 @@ class PluginClass:
 
     description (string) describing your plugin
     title (string) naming your plugin
+    file_types (string) file_types which should trigger refresh for this plugin
 
     Public methods:
 
@@ -89,17 +97,19 @@ class PluginClass:
 
     self.sendCommand(plugin, command, settings):
 
-        In conjustion with addResourceCan be used to write custom plugins
-
         (instance) plugin; instance
-        (string) command; to trigger in livereload.js (refresh,info, or one of the plugins)
-        (object) settings; additiona data that gets paseed to command (should be json parsable)
+        (string) command; to trigger in livereload.js (refresh, info, or one of the plugins)
+        (object) settings; additional data that gets passed to command (should be json parsable)
 
     self.addResource(req_path, buffer, content_type='text/plain'):
 
         (string) req_path;  browser path to file you want to serve. Ex: /yourfile.js
         (string/file) buffer; string or file instance to file you want to serve
         (string) content_type; Mime-type of file you want to serve
+
+    self.listClients():
+
+        returns list with all connected clients with their req_url and origin
 
     """
 
@@ -128,21 +138,39 @@ class PluginClass:
             sublime.set_timeout(lambda : \
                                 sublime.status_message('LiveReload refresh from %s'
                                  % self.name), 100)
-            LiveReload.API.send(json.dumps([command, settings]))
+            if True:
+                settings["command"] = "reload"
+                LiveReload.API.send(json.dumps(settings))
 
     def refresh(self, filename, settings=None):
-        if self.file_types is '*' or [f for f in
-                self.file_types.split(',') if filename.strip(' '
-                ).endswith(f)]:
-            if not settings:
-                settings = {
-                    'path': filename,
-                    'apply_js_live': self.settings.get('apply_js_live'
-                            ),
-                    'apply_css_live': self.settings.get('apply_css_live'
-                            ),
-                    'apply_images_live': self.settings.get('apply_images_live'
-                            ),
-                    }
+
+        if not settings:
+            settings = {
+                'path': filename,
+                'apply_js_live': self.settings.get('apply_js_live'),
+                'apply_css_live': self.settings.get('apply_css_live'),
+                'apply_images_live': self.settings.get('apply_images_live'
+                        ),
+                }
+
+        if [f for f in self.file_types.split(',') if filename.strip(' '
+            ).endswith(f)]:
+
+            # if we have defined filter
 
             self.sendCommand('refresh', settings)
+        elif self.file_types is '*':
+
+            # for everything else
+
+            self.sendCommand('refresh', settings)
+        else:
+            print 'Missing file_types filter in %s plug-in implementation' \
+                % self.name
+
+    def listClients(self):
+        return LiveReload.API.list_clients()
+
+    def onReceive(self, data, origin):
+        print 'PRejeto'
+        print data
