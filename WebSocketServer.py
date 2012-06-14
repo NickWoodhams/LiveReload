@@ -6,7 +6,7 @@ import SocketServer
 
 
 def log(s):
-    if True:
+    if False:
         print 'WebSocketServer: ' + str(s)
 
 

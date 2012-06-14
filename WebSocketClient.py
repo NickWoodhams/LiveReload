@@ -6,6 +6,8 @@ from base64 import b64encode, b64decode
 import sublime
 from struct import pack, unpack_from
 import array
+import json
+import LiveReload
 
 try:
     from hashlib import md5, sha1
@@ -42,54 +44,59 @@ Sec-WebSocket-Accept: %s\r
         self.socket = handler.request
         self.addr = handler.client_address
         self.server = handler.server
-        wsh = WSRequestHandler(self.socket, self.addr, False)
-        h = self.headers = wsh.headers
-        ver = h.get('Sec-WebSocket-Version')
-        if ver:
-
-            # HyBi/IETF version of the protocol
-
-            # HyBi-07 report version 7
-            # HyBi-08 - HyBi-12 report version 8
-            # HyBi-13 reports version 13
-
-            if ver in ['7', '8', '13']:
-                self.version = 'hybi-%02d' % int(ver)
-            else:
-                raise Exception('Unsupported protocol version %s' % ver)
-
-            key = h['Sec-WebSocket-Key']
-            log(key)
-
-            # Generate the hash value for the accept header
-
-            accept = b64encode(sha1(key + self.GUID).digest())
-
-            response = self.server_handshake_hybi % accept
-            response += '\r\n'
-            log(response)
-            self.socket.send(response.encode())
-            self.handler.addClient(self)
-
-            # Receive and handle data, add to clients table
-
-        while 0x1:
-            try:
-                data = self.socket.recv(1024)
-            except Exception, e:
-                log(e)
-                break
-            if not data:
-                break
-            dec = WebSocketClient.decode_hybi(data)
-            if dec['opcode'] == 0x08:
+        try:
+            self.wsh = WSRequestHandler(self.socket, self.addr, False)
+            if not hasattr(self.wsh, 'headers'):
                 self.close()
-            else:
-                self.onreceive(dec)
+            self.headers = self.wsh.headers
+            self.ver = self.headers.get('Sec-WebSocket-Version')
+            self.handshaken = False
+            if self.ver:
 
-        # Close the client connection
+                # HyBi/IETF version of the protocol
 
-        self.close()
+                # HyBi-07 report version 7
+                # HyBi-08 - HyBi-12 report version 8
+                # HyBi-13 reports version 13
+
+                if self.ver in ['7', '8', '13']:
+                    self.version = 'hybi-%02d' % int(self.ver)
+                else:
+                    raise Exception('Unsupported protocol version %s'
+                                    % self.ver)
+
+                key = self.headers.get('Sec-WebSocket-Key')
+                log(key)
+
+                # Generate the hash value for the accept header
+
+                accept = b64encode(sha1(key + self.GUID).digest())
+
+                response = self.server_handshake_hybi % accept
+                response += '\r\n'
+                log(response)
+                self.socket.send(response.encode())
+                self.handler.addClient(self)
+                while 0x1:
+                    try:
+                        data = self.socket.recv(1024)
+                    except Exception, e:
+                        log(e)
+                        break
+                    if not data:
+                        break
+                    dec = WebSocketClient.decode_hybi(data)
+                    if dec['opcode'] == 0x08:
+                        self.close()
+                    else:
+                        self.onreceive(dec)
+
+                # Close the client connection
+
+                self.close()
+        except Exception, e:
+
+            self.close()
 
     @staticmethod
     def unmask(buf, f):
@@ -244,23 +251,33 @@ Sec-WebSocket-Accept: %s\r
 
         try:
             log(data)
+
             if 'payload' in data:
                 log('payload true')
-                if 'hello' in data.get('payload'):
-                    sublime.set_timeout(lambda : \
-                            sublime.status_message('New LiveReload v2 client connected'
-                            ), 100)
-                    self.send('{"command":"hello","protocols":["http://livereload.com/protocols/connection-check-1","http://livereload.com/protocols/official-6"]}'
-                              )
+                req = json.loads(data.get('payload'))
+                log(req.get('command'))
+                if not self.handshaken:
+                    if req.get('command') == 'hello':
+                        sublime.set_timeout(lambda : \
+                                sublime.status_message('New LiveReload v2 client connected'
+                                ), 100)
+                        self.send('{"command":"hello","protocols":["http://livereload.com/protocols/connection-check-1","http://livereload.com/protocols/official-6","http://livereload.com/protocols/official-7"]}'
+                                  )
+                    else:
+                        sublime.set_timeout(lambda : \
+                                sublime.status_message('New LiveReload v1 client connected'
+                                ), 100)
+                        self.send('!!ver:' + str(self.server.version))
+
+                    self.handshaken = True
+                    self.info = {'origin': self.headers.get('Origin'),
+                                 'url': data.get('payload')}
+                    self.handler.updateInfo()
                 else:
-                    sublime.set_timeout(lambda : \
-                            sublime.status_message('New LiveReload v1 client connected'
-                            ), 100)
-                    self.send('!!ver:' + str(self.server.version))
-                self.info = {'origin': self.headers.get('Origin'),
-                             'url': data.get('payload')}
-                self.handler.updateInfo()
+                    LiveReload.API.dispatch_onReceive(req,
+                            self.self.headers.get('Origin'))
         except Exception, e:
+
             log(e)
 
     def _clean(self, msg):

@@ -3,6 +3,7 @@
 
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 import LiveReload
+import urlparse
 
 
 # HTTP handler with WebSocket upgrade support
@@ -18,7 +19,7 @@ class WSRequestHandler(SimpleHTTPRequestHandler):
 
         self.only_upgrade = only_upgrade  # only allow upgrades
         SimpleHTTPRequestHandler.__init__(self, req, addr, object())
-        self.server_version = 'LiveReload/1.0'
+        #self.server_version = 'LiveReload/1.0'
 
     def do_GET(self):
         if self.headers.get('upgrade') and self.headers.get('upgrade'
@@ -42,7 +43,8 @@ class WSRequestHandler(SimpleHTTPRequestHandler):
             self.last_code = 405
             self.last_message = '405 Method Not Allowed'
         else:
-            _file = LiveReload.API.has_file(self.path)
+            req = urlparse.urlparse(self.path)
+            _file = LiveReload.API.has_file(req.path)
 
             if _file:
                 if isinstance(_file["buffer"], file):
@@ -60,7 +62,7 @@ class WSRequestHandler(SimpleHTTPRequestHandler):
 
                 # Disable other requests
 
-                self.send_response(405, 'Method Not Allowed')
+                self.send_response(404, 'Not Found')
                 self.send_header('Content-type', 'text/plain')
                 self.send_header('Content-Length',
                                  len('Method Not Allowed'))
