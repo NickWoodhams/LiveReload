@@ -38,8 +38,9 @@ class CompassPreprocessor(LiveReload.Plugin,
     sublime_plugin.EventListener):
 
     title = 'Compass Preprocessor'
-    description = 'Compile and refresh page, when file is saved'
+    description = 'Compile and refresh page, when file is compiled'
     file_types = '.scss'
+    this_session_only = True
 
     def on_post_save(self, view):
         if view.file_name().find('.scss') > 0 \

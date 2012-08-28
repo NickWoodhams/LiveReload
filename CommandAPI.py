@@ -15,15 +15,6 @@ class LiveReloadSendCommand(sublime_plugin.ApplicationCommand):
         return False
 
 
-class LiveReloadAddJSCommand(sublime_plugin.ApplicationCommand):
-
-    def run(self, source, order):
-        pass
-
-    def is_visible(self):
-        return False
-
-
 class LiveReloadAddResCommand(sublime_plugin.ApplicationCommand):
 
     def run(

@@ -41,31 +41,12 @@ class LiveReload(threading.Thread, SimpleResourceServer, LiveReloadAPI):
 
         # LOAD latest livereload.js from github (for v2 of protocol) or if this fails local version
 
-        try:
-            req = \
-                urllib2.urlopen(urllib2.Request('http://raw.github.com/livereload/livereload-js/master/dist/livereload.js'
-                                ))
-
-            if not 'http://livereload.com/protocols/official-6' \
-                in req.read():
-                raise Exception('livereload.js updating failed, using bundled version'
-                                )
-            else:
-                self.add_static_file('/livereload.js', req.read(),
-                        'text/javascript')
-        except Exception, u:
-            print u
-            try:
-                path = os.path.join(sublime.packages_path(),
-                                    'LiveReload', 'web', 'livereload.js'
-                                    )
-                local = open(path, 'rU')
-                self.add_static_file('/livereload.js', local.read(),
-                        'text/javascript')
-            except IOError, e:
-                print e
-                sublime.error_message('livereload.js is missing from LiveReload package install'
-                        )
+        path = os.path.join(sublime.packages_path(),
+                            'LiveReload', 'web', 'livereload.js'
+                            )
+        local = open(path, 'rU')
+        self.add_static_file('/livereload.js', local.read(),
+                'text/javascript')
 
         try:
             self.start_server(self.port)

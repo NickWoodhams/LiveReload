@@ -25,7 +25,7 @@ class LiveReloadAPI(object):
         Adds resource to embedded http server
           path (string) request uri
           buffer (string) or (file) object
-          content_type (string) mime tpye of object to be served
+          content_type (string) mime type of the object to be served
         Example:
 
           LiveReload.API.add_static_file('/helloworld.js', "alert('Helloworld!')",

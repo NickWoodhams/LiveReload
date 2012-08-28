@@ -20,37 +20,40 @@ class PluginFactory(type):
         ):
 
         if not hasattr(cls, 'plugins'):
-            cls.settings = \
-                sublime.load_settings('LiveReload.sublime-settings')
+            cls.settings = sublime.load_settings('LiveReload.sublime-settings')
             cls.plugins = []
-            cls.enabled_plugins = cls.settings.get('enabled_plugins',
-                    [])
+            cls.enabled_plugins = cls.settings.get('enabled_plugins', [])
         else:
             print 'LiveReload new plugin: ' + cls.__name__
 
             # remove old plugin
-
             for plugin in cls.plugins:
                 if plugin.__name__ == cls.__name__:
                     cls.plugins.remove(plugin)
             cls.plugins.append(cls)
 
     def togglePlugin(cls, index):
-        plugin = cls.plugins[index]
-        if plugin.__name__ in cls.enabled_plugins:
-            cls.enabled_plugins.remove(plugin.__name__)
+
+        plugin = cls.plugins[index]()
+
+        if plugin.name in cls.enabled_plugins:
+            cls.enabled_plugins.remove(plugin.name)
             sublime.set_timeout(lambda : \
                                 sublime.status_message('"%s" the LiveReload plugin has been disabled!'
                                  % plugin.title), 100)
+            plugin.onDisabled()
         else:
-            cls.enabled_plugins.append(plugin.__name__)
+            cls.enabled_plugins.append(plugin.name)
             sublime.set_timeout(lambda : \
                                 sublime.status_message('"%s" the LiveReload plugin has been enabled!'
                                  % plugin.title), 100)
-        cls.settings = \
-            sublime.load_settings('LiveReload.sublime-settings')
-        cls.settings.set('enabled_plugins', cls.enabled_plugins)
-        sublime.save_settings('LiveReload.sublime-settings')
+            plugin.onEnabled()
+            
+        if plugin.this_session_only is not True:
+            print 'LiveReload enablig plugin forever: ' + plugin.name
+            cls.settings = sublime.load_settings('LiveReload.sublime-settings')
+            cls.settings.set('enabled_plugins', cls.enabled_plugins)
+            sublime.save_settings('LiveReload.sublime-settings')
 
     def listPlugins(cls):
         plist = []
@@ -59,20 +62,19 @@ class PluginFactory(type):
             if plugin.__name__ in cls.enabled_plugins:
                 p.append('Disable - ' + str(plugin.title))
             else:
-                p.append('Enable - ' + str(plugin.title))
+                if plugin.this_session_only is not True:
+                    p.append('Enable - ' + str(plugin.title))
+                else:
+                    p.append('Enable - ' + str(plugin.title) + ' (this session)')
             if plugin.description:
-                p.append(str(plugin.description) + ' ('
-                         + str(plugin.file_types) + ')')
+                p.append(str(plugin.description) + ' (' + str(plugin.file_types) + ')')
             plist.append(p)
         return plist
-
-    def __get__(cls, instance, owner):
-        return [p(instance) for p in cls.plugins]
 
     def dispatch_OnReceive(cls, data, origin):
         for plugin in cls.plugins:
             try:
-                plugin.onReceive(data, origin)
+                plugin().onReceive(data, origin)
             except Exception, e:
                 print e
 
@@ -111,6 +113,11 @@ class PluginClass:
 
         returns list with all connected clients with their req_url and origin
 
+    self.onReceive():
+
+        Event handler which fires when browser plugins sends data
+        (string) data sent by browser
+        (string) origin of data
     """
 
     __metaclass__ = PluginFactory
@@ -135,12 +142,12 @@ class PluginClass:
     def sendCommand(self, command, settings):
 
         if self.isEnabled:
-            sublime.set_timeout(lambda : \
-                                sublime.status_message('LiveReload refresh from %s'
-                                 % self.name), 100)
-            if True:
-                settings["command"] = "reload"
-                LiveReload.API.send(json.dumps(settings))
+            sublime.set_timeout(lambda : sublime.status_message('LiveReload refresh from %s'
+                                % self.name), 100)
+            if command is 'refresh':  # to support new protocoil
+                settings['command'] = 'reload'
+
+            LiveReload.API.send(json.dumps(settings))
 
     def refresh(self, filename, settings=None):
 
@@ -149,12 +156,10 @@ class PluginClass:
                 'path': filename,
                 'apply_js_live': self.settings.get('apply_js_live'),
                 'apply_css_live': self.settings.get('apply_css_live'),
-                'apply_images_live': self.settings.get('apply_images_live'
-                        ),
+                'apply_images_live': self.settings.get('apply_images_live'),
                 }
 
-        if [f for f in self.file_types.split(',') if filename.strip(' '
-            ).endswith(f)]:
+        if [f for f in self.file_types.split(',') if filename.strip(' ').endswith(f)]:
 
             # if we have defined filter
 
@@ -165,12 +170,24 @@ class PluginClass:
 
             self.sendCommand('refresh', settings)
         else:
-            print 'Missing file_types filter in %s plug-in implementation' \
-                % self.name
+            print 'Missing file_types filter in %s plug-in implementation' % self.name
 
     def listClients(self):
         return LiveReload.API.list_clients()
 
     def onReceive(self, data, origin):
-        print 'PRejeto'
-        print data
+        pass
+
+    def onEnabled(self):
+        pass
+
+    def onDisabled(self):
+        pass
+
+    @property
+    def this_session_only(self):
+        return False
+
+    @property
+    def file_types(self):
+        return "*"
