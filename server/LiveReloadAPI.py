@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sublime
+from Settings import Settings
 
 
 class LiveReloadAPI(object):
@@ -10,10 +11,7 @@ class LiveReloadAPI(object):
 
     def __init__(self):
         super(LiveReloadAPI, self).__init__()
-        self.settings = settings = \
-            sublime.load_settings('LiveReload.sublime-settings')
-        self.port = settings.get('port')
-        self.version = settings.get('version')
+        self.callbacks = []
 
     def add_static_file(
         self,
@@ -32,10 +30,8 @@ class LiveReloadAPI(object):
                                 'text/javascript')
         """
 
-        print 'LiveReload: added file ' + path + ' with content-type: ' \
-            + str(content_type)
-        self.static_files.append({"path": path, "buffer": buffer,
-                                 "content_type": content_type})
+        print 'LiveReload: added file ' + path + ' with content-type: ' + str(content_type)
+        self.static_files.append({'path': path, 'buffer': buffer, 'content_type': content_type})
 
     def send(self, data):
         """
@@ -68,3 +64,6 @@ class LiveReloadAPI(object):
         """
 
         return self.ws_server.server.list_clients()
+
+    def add_callback(self, path, callback_f):
+      self.callbacks[path] = callback_f

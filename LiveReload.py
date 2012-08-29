@@ -7,21 +7,23 @@ import os
 import sys
 import threading
 import atexit
-from WebSocketServer import WebSocketServer
-from SimpleResourceServer import SimpleResourceServer
-from LiveReloadAPI import LiveReloadAPI
-from PluginAPI import PluginClass as Plugin
+
+from server.WebSocketServer import WebSocketServer
+from server.SimpleResourceServer import SimpleResourceServer
+from server.LiveReloadAPI import LiveReloadAPI
+from server.PluginAPI import PluginClass as Plugin
+from server.Settings import Settings
 
 def singleton(cls):
     instances = {}
 
     def getinstance():
         if cls not in instances:
+            print "new instance of", cls.__name__
             instances[cls] = cls()
         return instances[cls]
 
     return getinstance
-
 
 @singleton
 class LiveReload(threading.Thread, SimpleResourceServer, LiveReloadAPI):
@@ -39,20 +41,18 @@ class LiveReload(threading.Thread, SimpleResourceServer, LiveReloadAPI):
         SimpleResourceServer.__init__(self)
         LiveReloadAPI.__init__(self)
 
-        # LOAD latest livereload.js from github (for v2 of protocol) or if this fails local version
-
-        path = os.path.join(sublime.packages_path(),
-                            'LiveReload', 'web', 'livereload.js'
-                            )
+        path = os.path.join(sublime.packages_path(), 'LiveReload', 'web', 'livereload.js')
         local = open(path, 'rU')
-        self.add_static_file('/livereload.js', local.read(),
-                'text/javascript')
+        self.add_static_file('/livereload.js', local.read(), 'text/javascript')
 
+        settings = Settings()
+        self.port = settings.get("port", 35729)
+        self.version = settings.get("version", "2.0")
+        
         try:
             self.start_server(self.port)
         except Exception:
-            sublime.error_message('Port(' + str(self.port)
-                                  + ') is allready using, trying ('
+            sublime.error_message('Port(' + str(self.port) + ') is allready using, trying ('
                                   + str(self.port + 1) + ')')
             self.start_server(self.port + 1)
 

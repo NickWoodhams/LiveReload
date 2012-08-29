@@ -1,9 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import LiveReload
-import sublime_plugin
 import os
+import sys
+import sublime
+import sublime_plugin
+
+# fix for import order
+
+sys.path.append(os.path.join(sublime.packages_path(), 'LiveReload'))
+LiveReload = __import__('LiveReload')
+sys.path.remove(os.path.join(sublime.packages_path(), 'LiveReload'))
 
 
 class SimpleRefresh(LiveReload.Plugin, sublime_plugin.EventListener):

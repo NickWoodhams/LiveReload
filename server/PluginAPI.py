@@ -4,7 +4,7 @@
 import LiveReload
 import json
 import sublime
-
+from Settings import Settings
 
 class PluginFactory(type):
 
@@ -20,7 +20,7 @@ class PluginFactory(type):
         ):
 
         if not hasattr(cls, 'plugins'):
-            cls.settings = sublime.load_settings('LiveReload.sublime-settings')
+            cls.settings = Settings()
             cls.plugins = []
             cls.enabled_plugins = cls.settings.get('enabled_plugins', [])
         else:
@@ -51,9 +51,7 @@ class PluginFactory(type):
             
         if plugin.this_session_only is not True:
             print 'LiveReload enablig plugin forever: ' + plugin.name
-            cls.settings = sublime.load_settings('LiveReload.sublime-settings')
             cls.settings.set('enabled_plugins', cls.enabled_plugins)
-            sublime.save_settings('LiveReload.sublime-settings')
 
     def listPlugins(cls):
         plist = []
