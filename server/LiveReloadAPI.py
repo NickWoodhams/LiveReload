@@ -3,6 +3,7 @@
 
 import sublime
 from Settings import Settings
+from functools import wraps
 
 
 class LiveReloadAPI(object):
@@ -64,6 +65,3 @@ class LiveReloadAPI(object):
         """
 
         return self.ws_server.server.list_clients()
-
-    def add_callback(self, path, callback_f):
-      self.callbacks[path] = callback_f

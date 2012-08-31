@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"prin",
+				"print"
+			],
+			[
+				"__",
+				"__name__"
+			],
+			[
+				"_",
+				"__name__"
+			],
+			[
+				"add",
+				"add_http_callback"
+			],
+			[
 				"se",
 				"settings"
 			],
@@ -18,10 +34,6 @@
 			[
 				"this",
 				"this_session_only"
-			],
-			[
-				"__",
-				"__class__"
 			],
 			[
 				"on",
@@ -216,14 +228,6 @@
 				"JadeParser"
 			],
 			[
-				"add",
-				"addClass"
-			],
-			[
-				"_",
-				"_source"
-			],
-			[
 				"is_nu",
 				"is_null"
 			],
@@ -396,10 +400,6 @@
 				"array	$… = array (…)"
 			],
 			[
-				"prin",
-				"print_r"
-			],
-			[
 				"pri",
 				"print_r"
 			],
@@ -416,18 +416,42 @@
 	"buffers":
 	[
 		{
-			"file": "LiveReload.sublime-settings",
+			"file": "/home/dz0ny/.config/sublime-text-2/Packages/LiveReload Markdown/lr_markdown_preview.py",
 			"settings":
 			{
-				"buffer_size": 72,
+				"buffer_size": 833,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "server/CommandAPI.py",
+			"file": "server/SimpleCallbackServer.py",
 			"settings":
 			{
-				"buffer_size": 490,
+				"buffer_size": 403,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "server/LiveReloadAPI.py",
+			"settings":
+			{
+				"buffer_size": 1744,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "server/WSRequestHandler.py",
+			"settings":
+			{
+				"buffer_size": 3057,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "LiveReload.py",
+			"settings":
+			{
+				"buffer_size": 2898,
 				"line_ending": "Unix"
 			}
 		}
@@ -435,16 +459,16 @@
 	"build_system": "Packages/Makefile/Make.sublime-build",
 	"command_palette":
 	{
-		"height": 222.0,
+		"height": 264.0,
 		"selected_items":
 		[
 			[
-				"ena",
-				"Package Control: Enable Package"
+				"live",
+				"LiveReload: Enable/disable plugins"
 			],
 			[
-				"live",
-				"Snippet: Insert livereload.js script"
+				"ena",
+				"Package Control: Enable Package"
 			],
 			[
 				"packa",
@@ -634,6 +658,10 @@
 	[
 		"/home/dz0ny/.config/sublime-text-2/Packages/LiveReload Markdown/plugin.py",
 		"/home/dz0ny/LiveReload/LiveReload.sublime-settings",
+		"/home/dz0ny/LiveReload/server/CommandAPI.py",
+		"/home/dz0ny/LiveReload/server/PluginAPI.py",
+		"/home/dz0ny/LiveReload/server/LiveReloadAPI.py",
+		"/home/dz0ny/LiveReload/server/WSRequestHandler.py",
 		"/home/dz0ny/LiveReload/LiveReload.py",
 		"/usr/lib/sublime-text-2/sublime_plugin.py",
 		"/home/dz0ny/LiveReload/SimpleReloadPlugin.py",
@@ -642,7 +670,6 @@
 		"/home/dz0ny/.cache/.fr-8mV0Zg/fri/adserve.php",
 		"/home/dz0ny/.cache/.fr-yALOjc/fri/restaurants.php",
 		"/home/dz0ny/.cache/.fr-Ba6LSX/fri/service.php",
-		"/home/dz0ny/LiveReload/server/CommandAPI.py",
 		"/home/dz0ny/LiveReload/server/__init__.py",
 		"/home/dz0ny/LiveReload/__init__.py",
 		"/home/dz0ny/LiveReload/messages.json",
@@ -756,10 +783,7 @@
 		"/home/dz0ny/Namizje/vzivo/package.json",
 		"/home/dz0ny/Prejemi/slice.py",
 		"/boot/grub/grub.cfg",
-		"/boot/abi-3.5.0-3-generic",
-		"/boot/extlinux/os-prober.cfg",
-		"/home/dz0ny/Prejemi/de2tar.pl",
-		"/home/dz0ny/Namizje/vzivo/assets/js/poly/backbone.js"
+		"/boot/abi-3.5.0-3-generic"
 	],
 	"find":
 	{
@@ -781,6 +805,10 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"func",
+			"new_f",
+			"Resource",
+			"addResource",
 			"settings",
 			")\n",
 			"  <div class=\"row-fluid\">\n    <div class=\"span3\">\n      <div class=\"well sidebar-nav\">\n        <ul class=\"nav nav-list\">\n          <li class=\"nav-header\">Sidebar</li>\n          <li class=\"active\"><a href=\"#\">Link</a></li>\n          <li><a href=\"#\">Link</a></li>\n          <li><a href=\"#\">Link</a></li>\n          <li><a href=\"#\">Link</a></li>\n          <li class=\"nav-header\">Sidebar</li>\n          <li><a href=\"#\">Link</a></li>\n          <li><a href=\"#\">Link</a></li>\n          <li><a href=\"#\">Link</a></li>\n          <li><a href=\"#\">Link</a></li>\n          <li><a href=\"#\">Link</a></li>\n          <li><a href=\"#\">Link</a></li>\n          <li class=\"nav-header\">Sidebar</li>\n          <li><a href=\"#\">Link</a></li>\n          <li><a href=\"#\">Link</a></li>\n          <li><a href=\"#\">Link</a></li>\n        </ul>\n      </div><!--/.well -->\n    </div><!--/span-->\n    <div class=\"span9\">\n      <div class=\"hero-unit\">\n        <h1>Hello, world!</h1>\n        <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>\n        <p><a class=\"btn btn-primary btn-large\">Learn more »</a></p>\n      </div>\n      <div class=\"row-fluid\">\n        <div class=\"span4\">\n          <h2>Heading</h2>\n          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>\n          <p><a class=\"btn\" href=\"#\">View details »</a></p>\n        </div><!--/span-->\n        <div class=\"span4\">\n          <h2>Heading</h2>\n          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>\n          <p><a class=\"btn\" href=\"#\">View details »</a></p>\n        </div><!--/span-->\n        <div class=\"span4\">\n          <h2>Heading</h2>\n          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>\n          <p><a class=\"btn\" href=\"#\">View details »</a></p>\n        </div><!--/span-->\n      </div><!--/row-->\n      <div class=\"row-fluid\">\n        <div class=\"span4\">\n          <h2>Heading</h2>\n          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>\n          <p><a class=\"btn\" href=\"#\">View details »</a></p>\n        </div><!--/span-->\n        <div class=\"span4\">\n          <h2>Heading</h2>\n          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>\n          <p><a class=\"btn\" href=\"#\">View details »</a></p>\n        </div><!--/span-->\n        <div class=\"span4\">\n          <h2>Heading</h2>\n          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>\n          <p><a class=\"btn\" href=\"#\">View details »</a></p>\n        </div><!--/span-->\n      </div><!--/row-->\n    </div><!--/span-->\n  </div><!--/row-->\n\n  <hr>\n\n  <footer>\n    <p>© Company 2012</p>\n  </footer>\n\n</div>",
@@ -904,11 +932,7 @@
 			"number",
 			"memca",
 			"from",
-			"console",
-			"log",
-			"onMetaLengthByte",
-			"bindedOnMetaLengthByte",
-			"counter"
+			"console"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -975,49 +999,23 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 3,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "LiveReload.sublime-settings",
+					"file": "/home/dz0ny/.config/sublime-text-2/Packages/LiveReload Markdown/lr_markdown_preview.py",
 					"settings":
 					{
-						"buffer_size": 72,
+						"buffer_size": 833,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								72,
-								72
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JSON.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "server/CommandAPI.py",
-					"settings":
-					{
-						"buffer_size": 490,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								490,
-								490
+								750,
+								750
 							]
 						],
 						"settings":
@@ -1027,7 +1025,117 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
+						"translation.y": 102.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "server/SimpleCallbackServer.py",
+					"settings":
+					{
+						"buffer_size": 403,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								379,
+								379
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
 						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "server/LiveReloadAPI.py",
+					"settings":
+					{
+						"buffer_size": 1744,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1350,
+								1350
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 663.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "server/WSRequestHandler.py",
+					"settings":
+					{
+						"buffer_size": 3057,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1417,
+								1417
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 612.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "LiveReload.py",
+					"settings":
+					{
+						"buffer_size": 2898,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2898,
+								2898
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1324.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
