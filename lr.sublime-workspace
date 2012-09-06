@@ -416,42 +416,26 @@
 	"buffers":
 	[
 		{
-			"file": "/home/dz0ny/.config/sublime-text-2/Packages/LiveReload Markdown/lr_markdown_preview.py",
+			"file": "README.md",
 			"settings":
 			{
-				"buffer_size": 833,
+				"buffer_size": 336,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "server/SimpleCallbackServer.py",
+			"file": "/home/dz0ny/Namizje/test.html",
 			"settings":
 			{
-				"buffer_size": 403,
+				"buffer_size": 0,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "server/LiveReloadAPI.py",
+			"file": "SimpleReloadPluginDelay.py",
 			"settings":
 			{
-				"buffer_size": 1744,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "server/WSRequestHandler.py",
-			"settings":
-			{
-				"buffer_size": 3057,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "LiveReload.py",
-			"settings":
-			{
-				"buffer_size": 2898,
+				"buffer_size": 685,
 				"line_ending": "Unix"
 			}
 		}
@@ -639,7 +623,7 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 449.0
+		"width": 575.0
 	},
 	"console":
 	{
@@ -656,13 +640,16 @@
 	},
 	"file_history":
 	[
+		"/home/dz0ny/LiveReload/SimpleReloadPluginDelay.py",
+		"/home/dz0ny/LiveReload/LiveReload.py",
+		"/home/dz0ny/LiveReload/server/WSRequestHandler.py",
+		"/home/dz0ny/LiveReload/server/LiveReloadAPI.py",
+		"/home/dz0ny/LiveReload/server/SimpleCallbackServer.py",
+		"/home/dz0ny/.config/sublime-text-2/Packages/LiveReload Markdown/lr_markdown_preview.py",
 		"/home/dz0ny/.config/sublime-text-2/Packages/LiveReload Markdown/plugin.py",
 		"/home/dz0ny/LiveReload/LiveReload.sublime-settings",
 		"/home/dz0ny/LiveReload/server/CommandAPI.py",
 		"/home/dz0ny/LiveReload/server/PluginAPI.py",
-		"/home/dz0ny/LiveReload/server/LiveReloadAPI.py",
-		"/home/dz0ny/LiveReload/server/WSRequestHandler.py",
-		"/home/dz0ny/LiveReload/LiveReload.py",
 		"/usr/lib/sublime-text-2/sublime_plugin.py",
 		"/home/dz0ny/LiveReload/SimpleReloadPlugin.py",
 		"/home/dz0ny/LiveReload/CompassPlugin.py",
@@ -780,10 +767,7 @@
 		"/home/dz0ny/Namizje/vzivo/public/ace/src/mode-coffee.js",
 		"/home/dz0ny/Namizje/vzivo/views/zivo/index.jade",
 		"/home/dz0ny/Namizje/vzivo/assets/js/poly/modal.js",
-		"/home/dz0ny/Namizje/vzivo/package.json",
-		"/home/dz0ny/Prejemi/slice.py",
-		"/boot/grub/grub.cfg",
-		"/boot/abi-3.5.0-3-generic"
+		"/home/dz0ny/Namizje/vzivo/package.json"
 	],
 	"find":
 	{
@@ -999,56 +983,55 @@
 	"groups":
 	[
 		{
-			"selected": 3,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "/home/dz0ny/.config/sublime-text-2/Packages/LiveReload Markdown/lr_markdown_preview.py",
+					"file": "README.md",
 					"settings":
 					{
-						"buffer_size": 833,
+						"buffer_size": 336,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								750,
-								750
+								336,
+								336
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/Markdown/Markdown.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 102.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "server/SimpleCallbackServer.py",
+					"file": "/home/dz0ny/Namizje/test.html",
 					"settings":
 					{
-						"buffer_size": 403,
+						"buffer_size": 0,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								379,
-								379
+								0,
+								0
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.tmLanguage"
+							"auto_name": "",
+							"syntax": "Packages/HTML/HTML.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1058,84 +1041,26 @@
 				},
 				{
 					"buffer": 2,
-					"file": "server/LiveReloadAPI.py",
+					"file": "SimpleReloadPluginDelay.py",
 					"settings":
 					{
-						"buffer_size": 1744,
+						"buffer_size": 685,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1350,
-								1350
+								425,
+								425
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/Python/Python.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 663.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "server/WSRequestHandler.py",
-					"settings":
-					{
-						"buffer_size": 3057,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1417,
-								1417
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 612.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "LiveReload.py",
-					"settings":
-					{
-						"buffer_size": 2898,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2898,
-								2898
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1324.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
