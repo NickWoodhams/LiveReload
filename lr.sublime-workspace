@@ -4,16 +4,48 @@
 		"selected_items":
 		[
 			[
-				"prin",
-				"print"
+				"fun",
+				"func"
+			],
+			[
+				"sel",
+				"self"
+			],
+			[
+				"def",
+				"defs	Method"
+			],
+			[
+				"call",
+				"call"
+			],
+			[
+				"_",
+				"__init__"
+			],
+			[
+				"ca",
+				"callback"
 			],
 			[
 				"__",
 				"__name__"
 			],
 			[
-				"_",
-				"__name__"
+				"cla",
+				"className"
+			],
+			[
+				"try",
+				"try	Try/Except/Else"
+			],
+			[
+				"tr",
+				"try	Try/Except/Else/Finally"
+			],
+			[
+				"prin",
+				"print"
 			],
 			[
 				"add",
@@ -26,10 +58,6 @@
 			[
 				"live",
 				"LiveReload"
-			],
-			[
-				"call",
-				"callback_f"
 			],
 			[
 				"this",
@@ -54,10 +82,6 @@
 			[
 				"cho",
 				"chromeos"
-			],
-			[
-				"def",
-				"def	Function"
 			],
 			[
 				"zip",
@@ -264,10 +288,6 @@
 				"show_plugins_list"
 			],
 			[
-				"cla",
-				"PluginClass"
-			],
-			[
 				"e",
 				"enabled_plugins"
 			],
@@ -322,10 +342,6 @@
 			[
 				"W",
 				"ws_server"
-			],
-			[
-				"tr",
-				"try	Try/Except"
 			],
 			[
 				"start",
@@ -416,26 +432,42 @@
 	"buffers":
 	[
 		{
-			"file": "README.md",
+			"file": "/home/dz0ny/.config/sublime-text-2/Packages/Default/exec.py",
 			"settings":
 			{
-				"buffer_size": 336,
+				"buffer_size": 8237,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/home/dz0ny/Namizje/test.html",
+			"file": "/home/dz0ny/.config/sublime-text-2/Packages/LiveReload Markdown/web/mk_preview/public/index.html",
 			"settings":
 			{
-				"buffer_size": 0,
+				"buffer_size": 525,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "SimpleReloadPluginDelay.py",
+			"file": "server/WSRequestHandler.py",
 			"settings":
 			{
-				"buffer_size": 685,
+				"buffer_size": 3400,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "LiveReload.py",
+			"settings":
+			{
+				"buffer_size": 2869,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "server/PluginAPI.py",
+			"settings":
+			{
+				"buffer_size": 6077,
 				"line_ending": "Unix"
 			}
 		}
@@ -448,6 +480,10 @@
 		[
 			[
 				"live",
+				"LiveReload: Enable/disable plugins"
+			],
+			[
+				"Live",
 				"LiveReload: Enable/disable plugins"
 			],
 			[
@@ -473,10 +509,6 @@
 			[
 				"packe",
 				"Package Control: Remove Package"
-			],
-			[
-				"Live",
-				"LiveReload: Enable/disable plugins"
 			],
 			[
 				"enable",
@@ -623,7 +655,7 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 575.0
+		"width": 449.0
 	},
 	"console":
 	{
@@ -640,16 +672,21 @@
 	},
 	"file_history":
 	[
-		"/home/dz0ny/LiveReload/SimpleReloadPluginDelay.py",
-		"/home/dz0ny/LiveReload/LiveReload.py",
-		"/home/dz0ny/LiveReload/server/WSRequestHandler.py",
-		"/home/dz0ny/LiveReload/server/LiveReloadAPI.py",
 		"/home/dz0ny/LiveReload/server/SimpleCallbackServer.py",
+		"/home/dz0ny/LiveReload/server/WSRequestHandler.py",
+		"/home/dz0ny/LiveReload/server/PluginAPI.py",
+		"/home/dz0ny/LiveReload/LiveReload.py",
 		"/home/dz0ny/.config/sublime-text-2/Packages/LiveReload Markdown/lr_markdown_preview.py",
+		"/home/dz0ny/LiveReload/SimpleReloadCallback.py",
+		"/home/dz0ny/LiveReload/SimpleReloadPluginCallback.py",
+		"/home/dz0ny/Namizje/test.html",
+		"/home/dz0ny/LiveReload/server/WebSocketClient.py",
+		"/home/dz0ny/LiveReload/README.md",
+		"/home/dz0ny/LiveReload/SimpleReloadPluginDelay.py",
+		"/home/dz0ny/LiveReload/server/LiveReloadAPI.py",
 		"/home/dz0ny/.config/sublime-text-2/Packages/LiveReload Markdown/plugin.py",
 		"/home/dz0ny/LiveReload/LiveReload.sublime-settings",
 		"/home/dz0ny/LiveReload/server/CommandAPI.py",
-		"/home/dz0ny/LiveReload/server/PluginAPI.py",
 		"/usr/lib/sublime-text-2/sublime_plugin.py",
 		"/home/dz0ny/LiveReload/SimpleReloadPlugin.py",
 		"/home/dz0ny/LiveReload/CompassPlugin.py",
@@ -762,12 +799,7 @@
 		"/home/dz0ny/Namizje/vzivo/.git/description",
 		"/home/dz0ny/Namizje/vzivo/.git/HEAD",
 		"/home/dz0ny/Namizje/vzivo/.git/ORIG_HEAD",
-		"/home/dz0ny/Namizje/vzivo/views/nadzor/layout.jade",
-		"/home/dz0ny/Namizje/vzivo/public/ace/src-min/mode-jade.js",
-		"/home/dz0ny/Namizje/vzivo/public/ace/src/mode-coffee.js",
-		"/home/dz0ny/Namizje/vzivo/views/zivo/index.jade",
-		"/home/dz0ny/Namizje/vzivo/assets/js/poly/modal.js",
-		"/home/dz0ny/Namizje/vzivo/package.json"
+		"/home/dz0ny/Namizje/vzivo/views/nadzor/layout.jade"
 	],
 	"find":
 	{
@@ -789,6 +821,13 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			".name",
+			".cls",
+			"_httpcallback.__module__",
+			"instance",
+			"LiveReload",
+			"self.func_class",
+			"on_post_compile",
 			"func",
 			"new_f",
 			"Resource",
@@ -909,14 +948,7 @@
 			"settings.register",
 			"torrent-detailss",
 			"'torrent-details",
-			"lockout",
-			"metadata",
-			"escapehtml",
-			"_setFadeTimer",
-			"number",
-			"memca",
-			"from",
-			"console"
+			"lockout"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -924,6 +956,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"Server",
 			"",
 			"global.shoutcast_vir",
 			"//console.log",
@@ -988,50 +1021,53 @@
 			[
 				{
 					"buffer": 0,
-					"file": "README.md",
+					"file": "/home/dz0ny/.config/sublime-text-2/Packages/Default/exec.py",
 					"settings":
 					{
-						"buffer_size": 336,
+						"buffer_size": 8237,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								336,
-								336
+								8237,
+								8237
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Markdown/Markdown.tmLanguage"
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 2397.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "/home/dz0ny/Namizje/test.html",
+					"file": "/home/dz0ny/.config/sublime-text-2/Packages/LiveReload Markdown/web/mk_preview/public/index.html",
 					"settings":
 					{
-						"buffer_size": 0,
+						"buffer_size": 525,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								525,
+								525
 							]
 						],
 						"settings":
 						{
-							"auto_name": "",
-							"syntax": "Packages/HTML/HTML.tmLanguage"
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1041,26 +1077,84 @@
 				},
 				{
 					"buffer": 2,
-					"file": "SimpleReloadPluginDelay.py",
+					"file": "server/WSRequestHandler.py",
 					"settings":
 					{
-						"buffer_size": 685,
+						"buffer_size": 3400,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								425,
-								425
+								2910,
+								2910
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.tmLanguage"
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 561.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "LiveReload.py",
+					"settings":
+					{
+						"buffer_size": 2869,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2751,
+								2751
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1530.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "server/PluginAPI.py",
+					"settings":
+					{
+						"buffer_size": 6077,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2778,
+								2778
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 561.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"

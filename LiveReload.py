@@ -8,6 +8,7 @@ import sys
 import threading
 import atexit
 
+from functools import wraps
 from server.WebSocketServer import WebSocketServer
 from server.SimpleResourceServer import SimpleResourceServer
 from server.SimpleCallbackServer import SimpleCallbackServer
@@ -27,22 +28,24 @@ def singleton(cls):
 
     return getinstance
 
-
+@singleton
 class LiveReload(threading.Thread, SimpleCallbackServer, SimpleResourceServer, LiveReloadAPI):
 
     """
     Start the LiveReload, which exposes public api.
     """
 
-    def run(self):
-        """
-        Start LiveReload
-        """
+    def __init__(self):
 
         threading.Thread.__init__(self)
         SimpleCallbackServer.__init__(self)
         SimpleResourceServer.__init__(self)
         LiveReloadAPI.__init__(self)
+
+    def run(self):
+        """
+        Start LiveReload
+        """
 
         path = os.path.join(sublime.packages_path(), 'LiveReload', 'web', 'livereload.js')
         local = open(path, 'rU')
@@ -83,8 +86,7 @@ except Exception:
     API.start()
 
 
-class http_callback(object):
-
+def http_callback(callback_f):
     """
     Add callback to plugin defined function. For example request to GET /callback/plugin_name/log_me
     would trigger log_me function in plugin
@@ -97,19 +99,8 @@ class http_callback(object):
 
     """
 
-    def __init__(self, callback_f):
-
-        path = '/callback/%s/%s' % (callback_f.__module__, callback_f.__name__)
-        print 'LiveReload: added callback with url %s' % path
-        callback_f.path = path
-        sys.modules['LiveReload'].API.callbacks.append({'path': path, 'callback': self})
-        self.func = callback_f
-
-    def __call__(self, req):
-        return self.func(self, req)
-
-    def __get__(self, obj, type=None):
-        if obj is None:
-            return self
-        new_func = self.func.__get__(obj, type)
-        return self.__class__(new_func)
+    callback_f.path = 'http://localhost:35729/callback/%s/%s' % (callback_f.__module__.lower(),
+            callback_f.__name__)
+    sys.modules['LiveReload'].API.callbacks.append({'path': callback_f.path, 'name': callback_f.__name__, 'cls': callback_f.__module__})
+    print 'LiveReload: added callback with url %s' % callback_f.path
+    return callback_f

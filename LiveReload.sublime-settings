@@ -1,5 +1,7 @@
 {
-     "enabled_plugins": [], 
+     "enabled_plugins": [
+          "SimpleRefreshDelay"
+     ], 
      "version": "2.0", 
      "port": 35729
 }

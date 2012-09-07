@@ -4,7 +4,7 @@
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 import LiveReload
 import urlparse
-
+import sys
 
 # HTTP handler with WebSocket upgrade support
 
@@ -48,8 +48,14 @@ class WSRequestHandler(SimpleHTTPRequestHandler):
 
             if _httpcallback:
                 try:
-                    res = _httpcallback(req)
-                    self.send_response(200, 'OK')
+                    func = getattr(sys.modules['LiveReload'].Plugin.getPlugin(_httpcallback['cls']), _httpcallback['name'], None)
+                    if func:
+                        res = func(req)
+                        self.send_response(200, 'OK')
+                    else:
+                        res = "Callback method not found"
+                        self.send_response(404, 'Not Found')
+                    print res
                 except Exception, e:
                     print e
                     self.send_response(500, 'Error')

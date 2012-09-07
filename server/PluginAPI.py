@@ -6,6 +6,7 @@ import json
 import sublime
 from Settings import Settings
 
+
 class PluginFactory(type):
 
     """
@@ -27,6 +28,7 @@ class PluginFactory(type):
             print 'LiveReload new plugin: ' + cls.__name__
 
             # remove old plugin
+
             for plugin in cls.plugins:
                 if plugin.__name__ == cls.__name__:
                     cls.plugins.remove(plugin)
@@ -48,16 +50,24 @@ class PluginFactory(type):
                                 sublime.status_message('"%s" the LiveReload plugin has been enabled!'
                                  % plugin.title), 100)
             plugin.onEnabled()
-            
+
         if plugin.this_session_only is not True:
             print 'LiveReload enablig plugin forever: ' + plugin.name
             cls.settings.set('enabled_plugins', cls.enabled_plugins)
+
+    def getPlugin(cls, className):
+        for p in cls.plugins:
+            print 'p name %s' % p.__name__
+            if p.__name__ == className:
+                print 'Found ' + className
+                return p()  # instance
+        return False
 
     def listPlugins(cls):
         plist = []
         for plugin in cls.plugins:
             p = []
-            if plugin.__name__ in cls.enabled_plugins:
+            if plugin.__name__ == cls.enabled_plugins:
                 p.append('Disable - ' + str(plugin.title))
             else:
                 if plugin.this_session_only is not True:
@@ -188,4 +198,4 @@ class PluginClass:
 
     @property
     def file_types(self):
-        return "*"
+        return '*'

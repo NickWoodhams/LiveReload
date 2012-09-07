@@ -261,7 +261,7 @@ Sec-WebSocket-Accept: %s\r
                         sublime.set_timeout(lambda : \
                                 sublime.status_message('New LiveReload v2 client connected'
                                 ), 100)
-                        self.send('{"command":"hello","protocols":["http://livereload.com/protocols/connection-check-1","http://livereload.com/protocols/official-6","http://livereload.com/protocols/official-7"]}'
+                        self.send('{"command":"hello","protocols":["http://livereload.com/protocols/connection-check-1","http://livereload.com/protocols/official-6","http://livereload.com/protocols/official-7","http://dz0ny.info/sm2-plugin"]}'
                                   )
                     else:
                         sublime.set_timeout(lambda : \
