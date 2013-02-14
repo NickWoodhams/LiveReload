@@ -12,6 +12,7 @@ from functools import wraps
 from server.WebSocketServer import WebSocketServer
 from server.SimpleResourceServer import SimpleResourceServer
 from server.SimpleCallbackServer import SimpleCallbackServer
+from server.SimpleWSServer import SimpleWSServer
 from server.LiveReloadAPI import LiveReloadAPI
 from server.PluginAPI import PluginClass as Plugin
 from server.Settings import Settings
@@ -29,7 +30,7 @@ def singleton(cls):
     return getinstance
 
 @singleton
-class LiveReload(threading.Thread, SimpleCallbackServer, SimpleResourceServer, LiveReloadAPI):
+class LiveReload(threading.Thread, SimpleCallbackServer, SimpleWSServer, SimpleResourceServer, LiveReloadAPI):
 
     """
     Start the LiveReload, which exposes public api.
@@ -39,6 +40,7 @@ class LiveReload(threading.Thread, SimpleCallbackServer, SimpleResourceServer, L
 
         threading.Thread.__init__(self)
         SimpleCallbackServer.__init__(self)
+        SimpleWSServer.__init__(self)
         SimpleResourceServer.__init__(self)
         LiveReloadAPI.__init__(self)
 
@@ -88,7 +90,7 @@ except Exception:
 
 def http_callback(callback_f):
     """
-    Add callback to plugin defined function. For example request to GET /callback/plugin_name/log_me
+    Add http callback to plugin defined function. For example request to GET /callback/plugin_name/log_me
     would trigger log_me function in plugin
 
     Example:
@@ -101,6 +103,29 @@ def http_callback(callback_f):
 
     callback_f.path = 'http://localhost:35729/callback/%s/%s' % (callback_f.__module__.lower(),
             callback_f.__name__)
-    sys.modules['LiveReload'].API.callbacks.append({'path': callback_f.path, 'name': callback_f.__name__, 'cls': callback_f.__module__})
+    sys.modules['LiveReload'].API.callbacks.append({'path': callback_f.path,
+            'name': callback_f.__name__, 'cls': callback_f.__module__})
     print 'LiveReload: added callback with url %s' % callback_f.path
+    return callback_f
+
+
+def websocket_callback(callback_f):
+    """
+    Add websocket callback to plugin defined function. For example on function call in browser
+    LiveReload.SM2.plugin_name.definedfunction(data) would trigger definedfunction function in plugin or vice verse.
+    Shortly you can call client functions from the server and server functions from client. Everything is JSON encoded
+    by default.
+
+    Example:
+        @LiveReload.websocket_callback
+        def compiled(self, json):
+            print json # json object
+            return "cool" #to http client {msg: "cool"}
+
+    """
+
+    callback_f.path = 'SM2.%s.%s' % (callback_f.__module__.lower(), callback_f.__name__)
+    sys.modules['LiveReload'].API.ws_callbacks.append({'path': callback_f.path,
+            'name': callback_f.__name__, 'cls': callback_f.__module__})
+    print 'LiveReload: added websocket callback with namespace %s' % callback_f.path
     return callback_f

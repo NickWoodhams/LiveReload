@@ -6,7 +6,7 @@ New Features
  - Support v2 of protocol
  - Plugin API(you can write your own plugins)
  - Plugins:
-  * Simple reload, demostrates simple reloading
+  * Simple reload, demonstrates simple reloading
   * Markdown preview, demonstrates new JS api pluigns, with two-way communication
   * Build plugin, demonstrates simple callback operation via native call
   * Chrome remote CSS edit plugin(You edit CSS in google chrome and it gets reflected back in SM2)

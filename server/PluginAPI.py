@@ -80,12 +80,24 @@ class PluginFactory(type):
         return plist
 
     def dispatch_OnReceive(cls, data, origin):
+        print data, origin
         for plugin in cls.plugins:
             try:
                 plugin().onReceive(data, origin)
             except Exception, e:
                 print e
-
+        try:
+            _wscallback = LiveReload.API.has_callback(data.path)
+            if _wscallback:
+                try:
+                    func = getattr(sys.modules['LiveReload'].Plugin.getPlugin(_wscallback['cls']), _wscallback['name'], None)
+                    if func:
+                        func(req)
+                except Exception, e:
+                    print e
+        
+        except Exception, e:
+            print "no namespace handler"
 
 class PluginClass:
 
