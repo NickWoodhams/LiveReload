@@ -1,7 +1,7 @@
-import sublime,sublime_plugin,threading,json,os,threading,subprocess,socket      
+import sublime,sublime_plugin,threading,json,os,threading,subprocess,socket,shutil
 from base64 import b64encode, b64decode
 # python 2.6 differences
-try: 
+try:
     from hashlib import md5, sha1
 except: from md5 import md5; from sha import sha as sha1
 from SimpleHTTPServer import SimpleHTTPRequestHandler
@@ -40,7 +40,7 @@ class LiveReload(threading.Thread):
 class LiveReloadChange(sublime_plugin.EventListener):
     def __init__  (self):
       LiveReload().start()
-      
+
     def __del__(self):
       global  LivereloadFactory
       LivereloadFactory.stop()
@@ -49,43 +49,49 @@ class LiveReloadChange(sublime_plugin.EventListener):
       global  LivereloadFactory
       settings = sublime.load_settings('LiveReload.sublime-settings')
       filename = view.file_name()
-      if view.file_name().find('.scss') > 0 and bool(settings.get('compass_css_dir')): 
-        filename = filename.replace('sass',settings.get('compass_css_dir')).replace('.scss','.css')
-        dirname = os.path.dirname(os.path.dirname(filename))
-        compiler = CompassThread(dirname,filename,LivereloadFactory)
+      if view.file_name().find('.scss') > 0 or view.file_name().find('.sass') > 0:
+        compiler = CompassThread(filename,LivereloadFactory)
         compiler.start()
       else:
         filename = os.path.normcase(filename)
         filename = os.path.split(filename)[1]
         filename = filename.replace('.scss','.css').replace('.styl','.css').replace('.less','.css')
         filename = filename.replace('.coffee','.js')
-        
+
         data = json.dumps(["refresh", {
               "path": filename,
               "apply_js_live": settings.get('apply_js_live'),
               "apply_css_live": settings.get('apply_css_live'),
               "apply_images_live": settings.get('apply_images_live')
           }])
-        sublime.set_timeout(lambda: LivereloadFactory.send_all(data), int(settings.get('delay_ms')))  
-        sublime.set_timeout(lambda: sublime.status_message("Sent LiveReload command for file: "+filename), int(settings.get('delay_ms')))  
-    
+        sublime.set_timeout(lambda: LivereloadFactory.send_all(data), int(settings.get('delay_ms')))
+        sublime.set_timeout(lambda: sublime.status_message("Sent LiveReload command for file: "+filename), int(settings.get('delay_ms')))
+
 
 class CompassThread(threading.Thread):
 
-    def __init__(self, dirname,filename,LivereloadFactory):
-      self.dirname = dirname
-      self.filename = filename
+    def __init__(self, filename,LivereloadFactory):
+      self.dirname = os.path.dirname(filename)
+      self.filename = filename.replace('.scss','.css').replace('.sass','.css')
       self.LivereloadFactory = LivereloadFactory
       self.stdout = None
       self.stderr = None
       threading.Thread.__init__(self)
-      
+
     def run(self):
       global LivereloadFactory
-      p = subprocess.Popen(['compass','compile',self.dirname],shell=True,  stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT )
+      print 'compass compile ' + self.dirname
+
+      # autocreate config.rb for compass
+      if not os.path.exists(os.path.join(self.dirname, "config.rb")):
+        print "Generating config.rb"
+        shutil.copy(os.path.join(sublime.packages_path(), "LiveReload","assets","config.rb"), self.dirname)
+
+      # compass compile
+      p = subprocess.Popen(['compass compile ' + self.dirname.replace('\\','/')],shell=True,  stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT )
       if p.stdout.read() :
         self.LivereloadFactory.send_all(json.dumps(["refresh", {
-              "path": self.filename,
+              "path": self.filename.replace('\\','/'),
               "apply_js_live": True,
               "apply_css_live": True,
               "apply_images_live": True
@@ -97,7 +103,7 @@ class WebSocketServer:
     Handle the Server, bind and accept new connections, open and close
     clients connections.
     """
-    
+
     def __init__(self, port, version):
       self.clients = []
       self.port = port
@@ -135,7 +141,7 @@ class WebSocketServer:
       """
       Send a message to all the currenly connected clients.
       """
-      
+
       [client.send(data) for client in self.clients]
 
     def remove(self, client):
@@ -196,7 +202,7 @@ Sec-WebSocket-Accept: %s\r
             print response
             self.s.send(response.encode())
             self.new_client()
-            
+
         # Receive and handle data
         while 1:
             try:
@@ -250,8 +256,8 @@ Sec-WebSocket-Accept: %s\r
 
         print("Encoded: %s" % repr(header + buf))
 
-        return header + buf, len(header), 0   
-            
+        return header + buf, len(header), 0
+
     @staticmethod
     def decode_hybi(buf, base64=False):
         """ Decode HyBi style WebSocket packets.

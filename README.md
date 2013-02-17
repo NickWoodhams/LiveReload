@@ -1,7 +1,7 @@
 LiveReload for Sublime Text 2
 =========
 
-A web browser page reloading plugin for the [Sublime Text 2](http://sublimetext.com "Sublime Text 2") editor. 
+A web browser page reloading plugin for the [Sublime Text 2](http://sublimetext.com "Sublime Text 2") editor.
 
 Installing
 -----
@@ -47,3 +47,13 @@ If you are using Chrome, just click the toolbar button (it will turn green to in
 ----
 
 You can also use the Preferences menu to change port, version and type of reloading(full, js,css).
+
+## Compass
+
+![](http://cdn.nmecdesign.com/wp/wp-content/uploads/2011/12/Compass-Logo.png)
+
+Want to use Livereload with compass ? Now you can !
+
+.scss and .css have to be in the same directory , if no config.rb file is found one will automatically generated !
+
+So if you want to start using compass, install compass gem, edit a xxx.scss file and voila ! A .css file would be automatically generated.
