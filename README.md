@@ -9,5 +9,11 @@ Installing
 Install with [Sublime Package Control](http://wbond.net/sublime_packages/package_control "Sublime Package Control"), search for LiveReload and install.
 
 
+Plugin api
+-----
+
+https://livereload-for-sublime-text.readthedocs.org/en/latest/
+
+
 Using
 -----

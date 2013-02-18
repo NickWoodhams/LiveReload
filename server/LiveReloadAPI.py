@@ -48,8 +48,11 @@ class LiveReloadAPI(object):
 
           LiveReload.API.send(data)
         """
-
-        self.ws_server.send(data)
+        try:
+          self.ws_server.send(data)
+        except Exception, e:
+          self.start_server(self.port)
+        
 
     def list_clients(self):
         """

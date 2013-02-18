@@ -7,6 +7,7 @@ import os
 import sys
 import threading
 import atexit
+import time
 
 from functools import wraps
 from server.WebSocketServer import WebSocketServer
@@ -59,9 +60,11 @@ class LiveReload(threading.Thread, SimpleCallbackServer, SimpleWSServer, SimpleR
 
         try:
             self.start_server(self.port)
-        except Exception:
-            sublime.error_message('Port(' + str(self.port) + ') is allready using, trying ('
+        except Exception, e:
+            print e
+            sublime.error_message('Port(' + str(self.port) + ') is already using, trying ('
                                   + str(self.port + 1) + ')')
+            time.sleep(3)
             self.start_server(self.port + 1)
 
     def start_server(self, port):

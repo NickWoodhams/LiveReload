@@ -54,45 +54,88 @@
 <dt id="PluginAPI.PluginClass">
 <em class="property">class </em><tt class="descclassname">PluginAPI.</tt><tt class="descname">PluginClass</tt><a class="reference internal" href="_modules/PluginAPI.html#PluginClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PluginAPI.PluginClass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<p>Class for implementing your custom plugins, sublime_plugins compatible</p>
-<p>Plugins implementing this reference should provide the following attributes:</p>
+<p>Class for implementing your custom plug-ins, sublime_plugins compatible</p>
+<p>Plug-ins implementing this reference should provide the following attributes:</p>
 <ul class="simple">
-<li>description (string) describing your plugin</li>
-<li>title (string) naming your plugin</li>
-<li>file_types (string) file_types which should trigger refresh for this plugin</li>
+<li>description (string) describing your plug-in</li>
+<li>title (string) naming your plug-in</li>
+<li>file_types (string) file_types which should trigger refresh for this plug-in</li>
 </ul>
-<p>Public methods:</p>
-<p>self.refresh(filename, settings):</p>
-<blockquote>
-<div><ul class="simple">
-<li>(string) filename; file to refresh (.css, .js, jpg ...)</li>
-<li>(object) settings; how to reload(entire page or just parts)</li>
-</ul>
-</div></blockquote>
-<p>self.sendCommand(plugin, command, settings):</p>
-<blockquote>
-<div><ul class="simple">
-<li>(instance) plugin; instance</li>
-<li>(string) command; to trigger in livereload.js (refresh, info, or one of the plugins)</li>
-<li>(object) settings; additional data that gets passed to command (should be json parsable)</li>
-</ul>
-</div></blockquote>
-<p>self.addResource(req_path, buffer, content_type=&#8217;text/plain&#8217;):</p>
-<blockquote>
-<div><ul class="simple">
+<dl class="method">
+<dt id="PluginAPI.PluginClass.addResource">
+<tt class="descname">addResource</tt><big>(</big><em>req_path</em>, <em>buffer</em>, <em>content_type='text/plain'</em><big>)</big><a class="reference internal" href="_modules/PluginAPI.html#PluginClass.addResource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PluginAPI.PluginClass.addResource" title="Permalink to this definition">¶</a></dt>
+<dd><ul class="simple">
 <li>(string) req_path;  browser path to file you want to serve. Ex: /yourfile.js</li>
 <li>(string/file) buffer; string or file instance to file you want to serve</li>
 <li>(string) content_type; Mime-type of file you want to serve</li>
 </ul>
-</div></blockquote>
-<p>self.listClients():</p>
-<blockquote>
-<div>returns list with all connected clients with their req_url and origin</div></blockquote>
-<p>self.onReceive():</p>
-<blockquote>
-<div>Event handler which fires when browser plugins sends data
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PluginAPI.PluginClass.file_types">
+<tt class="descname">file_types</tt><a class="reference internal" href="_modules/PluginAPI.html#PluginClass.file_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PluginAPI.PluginClass.file_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run plug-in only with this file extensions, defaults to all extensions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PluginAPI.PluginClass.listClients">
+<tt class="descname">listClients</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PluginAPI.html#PluginClass.listClients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PluginAPI.PluginClass.listClients" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns list with all connected clients with their req_url and origin</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PluginAPI.PluginClass.onDisabled">
+<tt class="descname">onDisabled</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PluginAPI.html#PluginClass.onDisabled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PluginAPI.PluginClass.onDisabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs when plugin is disabled via menu</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PluginAPI.PluginClass.onEnabled">
+<tt class="descname">onEnabled</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PluginAPI.html#PluginClass.onEnabled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PluginAPI.PluginClass.onEnabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs when plugin is enabled via menu</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PluginAPI.PluginClass.onReceive">
+<tt class="descname">onReceive</tt><big>(</big><em>data</em>, <em>origin</em><big>)</big><a class="reference internal" href="_modules/PluginAPI.html#PluginClass.onReceive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PluginAPI.PluginClass.onReceive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler which fires when browser plugins sends data
 - (string) data sent by browser
-- (string) origin of data</div></blockquote>
+- (string) origin of data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PluginAPI.PluginClass.refresh">
+<tt class="descname">refresh</tt><big>(</big><em>filename</em>, <em>settings=None</em><big>)</big><a class="reference internal" href="_modules/PluginAPI.html#PluginClass.refresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PluginAPI.PluginClass.refresh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic refresh command</p>
+<ul class="simple">
+<li>(string) filename; file to refresh (.css, .js, jpg ...)</li>
+<li>(object) settings; how to reload(entire page or just parts)</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="PluginAPI.PluginClass.sendCommand">
+<tt class="descname">sendCommand</tt><big>(</big><em>command</em>, <em>settings</em>, <em>filename=False</em><big>)</big><a class="reference internal" href="_modules/PluginAPI.html#PluginClass.sendCommand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PluginAPI.PluginClass.sendCommand" title="Permalink to this definition">¶</a></dt>
+<dd><ul class="simple">
+<li>(instance) plugin; instance</li>
+<li>(string) command; to trigger in livereload.js (refresh, info, or one of the plugins)</li>
+<li>(object) settings; additional data that gets passed to command (should be json parsable)</li>
+<li>(string) original name of file</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="PluginAPI.PluginClass.should_run">
+<tt class="descname">should_run</tt><big>(</big><em>filename=False</em><big>)</big><a class="headerlink" href="#PluginAPI.PluginClass.should_run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if specified filename is allowed for plug-in, and plug-in itself is enabled</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PluginAPI.PluginClass.this_session_only">
+<tt class="descname">this_session_only</tt><a class="reference internal" href="_modules/PluginAPI.html#PluginClass.this_session_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PluginAPI.PluginClass.this_session_only" title="Permalink to this definition">¶</a></dt>
+<dd><p>Should it stay enabled forever or this session only</p>
+</dd></dl>
+
 </dd></dl>
 
 <p>Decorators:</p>
