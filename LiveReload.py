@@ -94,6 +94,8 @@ def http_callback(callback_f):
     would trigger log_me function in plugin
 
     Example:
+    ::
+    
         @LiveReload.http_callback
         def compiled(self, req):
             print req # urlparse object
@@ -117,6 +119,8 @@ def websocket_callback(callback_f):
     by default.
 
     Example:
+    ::
+
         @LiveReload.websocket_callback
         def compiled(self, json):
             print json # json object

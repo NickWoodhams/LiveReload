@@ -95,7 +95,7 @@ class PluginFactory(type):
                         func(req)
                 except Exception, e:
                     print e
-        
+
         except Exception, e:
             print "no namespace handler"
 
@@ -106,28 +106,28 @@ class PluginClass:
 
     Plugins implementing this reference should provide the following attributes:
 
-    description (string) describing your plugin
-    title (string) naming your plugin
-    file_types (string) file_types which should trigger refresh for this plugin
+    - description (string) describing your plugin
+    - title (string) naming your plugin
+    - file_types (string) file_types which should trigger refresh for this plugin
 
     Public methods:
 
     self.refresh(filename, settings):
 
-        (string) filename; file to refresh (.css, .js, jpg ...)
-        (object) settings; how to reload(entire page or just parts)
+        - (string) filename; file to refresh (.css, .js, jpg ...)
+        - (object) settings; how to reload(entire page or just parts)
 
     self.sendCommand(plugin, command, settings):
 
-        (instance) plugin; instance
-        (string) command; to trigger in livereload.js (refresh, info, or one of the plugins)
-        (object) settings; additional data that gets passed to command (should be json parsable)
+        - (instance) plugin; instance
+        - (string) command; to trigger in livereload.js (refresh, info, or one of the plugins)
+        - (object) settings; additional data that gets passed to command (should be json parsable)
 
     self.addResource(req_path, buffer, content_type='text/plain'):
 
-        (string) req_path;  browser path to file you want to serve. Ex: /yourfile.js
-        (string/file) buffer; string or file instance to file you want to serve
-        (string) content_type; Mime-type of file you want to serve
+        - (string) req_path;  browser path to file you want to serve. Ex: /yourfile.js
+        - (string/file) buffer; string or file instance to file you want to serve
+        - (string) content_type; Mime-type of file you want to serve
 
     self.listClients():
 
@@ -136,8 +136,9 @@ class PluginClass:
     self.onReceive():
 
         Event handler which fires when browser plugins sends data
-        (string) data sent by browser
-        (string) origin of data
+        - (string) data sent by browser
+        - (string) origin of data
+
     """
 
     __metaclass__ = PluginFactory
@@ -162,11 +163,14 @@ class PluginClass:
     def sendCommand(self, command, settings):
 
         if self.isEnabled:
+            print('----- Send Command ---- ')
             sublime.set_timeout(lambda : sublime.status_message('LiveReload refresh from %s'
                                 % self.name), 100)
-            if command is 'refresh':  # to support new protocoil
+            if command is 'refresh':  # to support new protocol
                 settings['command'] = 'reload'
 
+            print('Call API')
+            print(settings)
             LiveReload.API.send(json.dumps(settings))
 
     def refresh(self, filename, settings=None):

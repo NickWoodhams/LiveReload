@@ -3,21 +3,27 @@
 
 import os
 import json
-import sublime
+try:
+    import sublime
+except Exception, e:
+    print e
 
 
 class Settings(dict):
 
     def __init__(self):
-        self.file_name = os.path.join(sublime.packages_path(), 'LiveReload',
-                                      'LiveReload.sublime-settings')
-        file_object = open(self.file_name)
-        data = json.load(file_object)
-        file_object.close()
-        for i in range(len(data)):
-            self[data.keys()[i]] = data[data.keys()[i]]
-        print 'LiveReload: Settings loaded'
-
+        try:
+            self.file_name = os.path.join(sublime.packages_path(), 'LiveReload',
+                                          'LiveReload.sublime-settings')
+            file_object = open(self.file_name)
+            data = json.load(file_object)
+            file_object.close()
+            for i in range(len(data)):
+                self[data.keys()[i]] = data[data.keys()[i]]
+            print 'LiveReload: Settings loaded'
+        except Exception, e:
+            print e
+            
     def save(self):
         file_object = open(self.file_name, 'w')
         json.dump(self, file_object, indent=5)
