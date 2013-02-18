@@ -49,25 +49,6 @@ class CompassPreprocessor(LiveReload.Plugin, sublime_plugin.EventListener):
         if self.should_run(self.original_filename):
             self.file_name_to_refresh = self.original_filename.replace('.scss', '.css').replace('.sass', '.css')
             dirname = os.path.dirname(view.file_name())
-            cfg_file = os.path.join(dirname, "config.rb")
-
-            # autocreate config.rb if no config.rb detected
-            if not os.path.exists(cfg_file):
-                print "Generating config.rb"
-
-                config_rb = """http_path = "/"
-                css_dir = "."
-                sass_dir = "."
-                images_dir = "img"
-                javascripts_dir = "javascripts"
-                output_style = :nested
-                relative_assets=true
-                line_comments = false
-                """
-                
-                with open(cfg_file, 'w') as f:
-                            f.write(config_rb)
-
             CompassThread(dirname, self.on_compile).start()
 
     def on_compile(self):
