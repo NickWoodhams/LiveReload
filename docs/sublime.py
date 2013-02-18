@@ -6,3 +6,5 @@ def packages_path():
 
 def error_message(string):
   pass
+
+platform = "build"

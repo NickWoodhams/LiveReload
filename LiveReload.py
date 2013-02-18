@@ -83,12 +83,12 @@ class LiveReload(threading.Thread, SimpleCallbackServer, SimpleWSServer, SimpleR
 
         self.ws_server.stop()
 
-
-try:
-    sys.modules['LiveReload'].API
-except Exception:
-    API = LiveReload()
-    API.start()
+if not sublime.platform is "build":
+    try:
+        sys.modules['LiveReload'].API
+    except Exception:
+        API = LiveReload()
+        API.start()
 
 
 def http_callback(callback_f):
