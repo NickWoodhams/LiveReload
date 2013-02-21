@@ -17,3 +17,5 @@ https://livereload-for-sublime-text.readthedocs.org/en/latest/
 
 Using
 -----
+
+Enable desired plug-ins via Command Palette (Ctrl+Shift+P)
