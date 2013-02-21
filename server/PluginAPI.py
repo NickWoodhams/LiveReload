@@ -4,8 +4,13 @@
 import LiveReload
 import json
 import sublime
-from Settings import Settings
+try:
+  from .Settings import Settings
+except ValueError:
+  from Settings import Settings
 
+def log(msg):
+    print(msg)
 
 class PluginFactory(type):
 
@@ -25,9 +30,9 @@ class PluginFactory(type):
             cls.plugins = []
             cls.enabled_plugins = cls.settings.get('enabled_plugins', [])
         else:
-            print 'LiveReload new plugin: ' + cls.__name__
+            log('LiveReload new plugin: ' + cls.__name__)
 
-            # remove old plugin
+            # remove old plug-in
 
             for plugin in cls.plugins:
                 if plugin.__name__ == cls.__name__:
@@ -50,23 +55,18 @@ class PluginFactory(type):
                                 sublime.status_message('"%s" the LiveReload plug-in has been enabled!'
                                  % plugin.title), 100)
             plugin.onEnabled()
-        print 'LiveReload enabling: ', plugin.name , cls.enabled_plugins
 
         #should only save permanent plug-ins
         p_enabled_plugins =[]
         for p in cls.enabled_plugins:
-            print cls.getPlugin(p).this_session_only
+            log(cls.getPlugin(p).this_session_only)
             if cls.getPlugin(p).this_session_only is not True:
-                p_enabled_plugins.append(p)
-
-        
+                p_enabled_plugins.append(p)        
         cls.settings.set('enabled_plugins', p_enabled_plugins)
 
     def getPlugin(cls, className):
         for p in cls.plugins:
-            print 'p name %s' % p.__name__
             if p.__name__ == className:
-                print 'Found ' + className
                 return p()  # instance
         return False
 
@@ -96,12 +96,12 @@ class PluginFactory(type):
         return plist
 
     def dispatch_OnReceive(cls, data, origin):
-        print data, origin
+        log(data, origin)
         for plugin in cls.plugins:
             try:
                 plugin().onReceive(data, origin)
-            except Exception, e:
-                print e
+            except Exception as e:
+                log(e)
         try:
             _wscallback = LiveReload.API.has_callback(data.path)
             if _wscallback:
@@ -109,11 +109,12 @@ class PluginFactory(type):
                     func = getattr(sys.modules['LiveReload'].Plugin.getPlugin(_wscallback['cls']), _wscallback['name'], None)
                     if func:
                         func(req)
-                except Exception, e:
-                    print e
+                except Exception as e:
+                    log(e)
 
-        except Exception, e:
-            print "no namespace handler"
+        except Exception:
+            log("no WS handler")
+
 
 class PluginClass:
 
@@ -138,21 +139,22 @@ class PluginClass:
 
     def should_run(self, filename=False):
         """ Returns True if specified filename is allowed for plug-in, and plug-in itself is enabled """
-        all_filters = LiveReload.Plugin.listAllDefinedFilters() 
+        all_filters = LiveReload.Plugin.listAllDefinedFilters()
+        
         def otherPluginsWithFilter():
             for f in all_filters:
                 if filename.endswith(f):
                     return False
             return True
 
-        this_plugin = self.file_types.split(',')   
+        this_plugin = self.file_types.split(',')
 
         if [f for f in this_plugin if filename.endswith(f)]:
-            print "unique", self.name, filename
+            log("unique", self.name, filename)
             return True
         elif self.file_types is '*' and otherPluginsWithFilter():
             #no other defined filters and this filter is *
-            print "catchall", self.name, filename
+            log("catchall", self.name, filename)
             return True
         else:
             return False
@@ -173,7 +175,7 @@ class PluginClass:
 
     def sendCommand(self, command, settings, filename=False):
         """
-        - (instance) plugin; instance
+        - (instance) plug-in; instance
         - (string) command; to trigger in livereload.js (refresh, info, or one of the plugins)
         - (object) settings; additional data that gets passed to command (should be json parsable)
         - (string) original name of file
@@ -184,8 +186,8 @@ class PluginClass:
             try:
                 if not filename:
                     filename = settings['path'].strip(' ')
-            except Exception, e:
-                print "Missing path definition"          
+            except Exception:
+                log("Missing path definition")
 
             if self.should_run(filename):
                 sublime.set_timeout(lambda : sublime.status_message('LiveReload refresh from %s'
@@ -193,7 +195,7 @@ class PluginClass:
                 # if we have defined filter
                 LiveReload.API.send(json.dumps(settings))
             else:
-                print 'Skipping ', self.name
+                log('Skipping ', self.name)
             
 
     def refresh(self, filename, settings=None):
@@ -220,18 +222,18 @@ class PluginClass:
 
     def onReceive(self, data, origin):
         """
-        Event handler which fires when browser plugins sends data
+        Event handler which fires when browser plug-ins sends data
         - (string) data sent by browser
         - (string) origin of data
         """
         pass
 
     def onEnabled(self):
-        """ Runs when plugin is enabled via menu"""
+        """ Runs when plug-in is enabled via menu"""
         pass
 
     def onDisabled(self):
-        """ Runs when plugin is disabled via menu"""
+        """ Runs when plug-in is disabled via menu"""
         pass
 
     @property
@@ -244,4 +246,8 @@ class PluginClass:
         """ Run plug-in only with this file extensions, defaults to all extensions"""
         return '*'
 
-PluginInterface = PluginFactory('PluginInterface', (object,PluginClass, ), {})
+##black magic, python2 vs python3
+try:
+    PluginInterface = PluginFactory('PluginInterface', (object,PluginClass, ), {})
+except TypeError:
+    PluginInterface = PluginFactory('PluginInterface', (PluginClass, ), {})

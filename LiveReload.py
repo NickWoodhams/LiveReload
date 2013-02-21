@@ -16,7 +16,7 @@ try:
     from .server.SimpleCallbackServer import SimpleCallbackServer
     from .server.SimpleWSServer import SimpleWSServer
     from .server.LiveReloadAPI import LiveReloadAPI
-    from .server.PluginAPI import PluginClass as Plugin
+    from .server.PluginAPI import PluginInterface as Plugin
     from .server.Settings import Settings
 
 except (ValueError):
