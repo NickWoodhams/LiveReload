@@ -23,6 +23,5 @@ class SimpleWSCallback(LiveReload.Plugin):
 
     @LiveReload.websocket_callback
     def on_post_compile(self, req):
-        print 'on_post_compile', req
         self.refresh(os.path.basename(sublime.active_window().active_view().file_name()))
         return 'All ok from SimpleRefreshCallBack!'

@@ -19,5 +19,5 @@ class LiveReloadEnablePluginCommand(sublime_plugin.ApplicationCommand):
             LiveReload.Plugin.togglePlugin(index)
 
     def run(self):
-
+        print(dir(LiveReload.Plugin))
         sublime.active_window().show_quick_panel(LiveReload.Plugin.listPlugins(), self.on_done)

@@ -128,8 +128,6 @@ class PluginClass:
 
     """
 
-    __metaclass__ = PluginFactory
-
     @property
     def name(self):
         return str(self.__class__).split('.')[1].rstrip("'>")
@@ -245,3 +243,5 @@ class PluginClass:
     def file_types(self):
         """ Run plug-in only with this file extensions, defaults to all extensions"""
         return '*'
+
+PluginInterface = PluginFactory('PluginInterface', (object,PluginClass, ), {})

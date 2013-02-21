@@ -10,16 +10,13 @@ class SimpleCallbackServer(object):
         try:
             if not self.callbacks:
                 self.callbacks = []
-        except Exception, e:
+        except Exception:
             self.callbacks = []
 
     def has_callback(self, path):
         """Traverse added static_files return object"""
 
-        print 'testing for path %s' % path
         for callback in self.callbacks:
-            print 'looking %s' % callback['path']
             if path in callback['path']:
-                print 'found path %s' % callback['path']
                 return callback
         return False

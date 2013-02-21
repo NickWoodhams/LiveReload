@@ -1,13 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from WebSocketClient import WebSocketClient
-import SocketServer
 
+try:
+    from .WebSocketClient import WebSocketClient
+except ValueError:
+    from WebSocketClient import WebSocketClient
+
+try:
+    import SocketServer
+except ImportError:
+    import socketserver as SocketServer
 
 def log(s):
-    if False:
-        print 'WebSocketServer: ' + str(s)
+    pass
 
 
 class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
@@ -52,27 +58,25 @@ class ThreadedTCPServer(SocketServer.ThreadingMixIn,
 
         SocketServer.TCPServer.__init__(self, server_address,
                 RequestHandlerClass)
-        log('Started ' + str(server_address))
         self.clients = []
         self.clients_info = []
         self.version = version
 
     def send_all(self, data):
         """
-        Send a message to all the currenly connected clients.
+        Send a message to all the currently connected clients.
         """
 
         for client in self.clients:
             try:
                 client.send(data)
-            except Exception, e:
-                log(e)
+            except Exception:
                 self.clients.remove(client)
 
     def list_clients(self):
         """
-        List all the currenly connected clients.
-        contains request url, headers
+        List all the currently connected clients.
+        contains request URL, headers
         """
 
         return self.clients_info
@@ -86,8 +90,8 @@ class WebSocketServer:
     """
 
     def __init__(self, port, version):
-        self.server = ThreadedTCPServer(('', port),
-                ThreadedTCPRequestHandler, version)
+        self.server = ThreadedTCPServer((''.encode('ascii'), port),
+                ThreadedTCPRequestHandler, version.encode('ascii'))
 
     def send(self, data):
         self.server.send_all(data)

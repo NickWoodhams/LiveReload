@@ -2,9 +2,16 @@
 # -*- coding: utf-8 -*-
 
 import sublime
-from Settings import Settings
+
+try:
+  from .Settings import Settings
+except ValueError:
+  from Settings import Settings
+
 from functools import wraps
 
+def log(msg):
+  pass
 
 class LiveReloadAPI(object):
 
@@ -31,7 +38,7 @@ class LiveReloadAPI(object):
                                 'text/javascript')
         """
 
-        print 'LiveReload: added file ' + path + ' with content-type: ' + str(content_type)
+        log('LiveReload: added file ' + path + ' with content-type: ' + str(content_type))
         self.static_files.append({'path': path, 'buffer': buffer, 'content_type': content_type})
 
     def send(self, data):
@@ -50,7 +57,7 @@ class LiveReloadAPI(object):
         """
         try:
           self.ws_server.send(data)
-        except Exception, e:
+        except Exception as e:
           self.start_server(self.port)
         
 

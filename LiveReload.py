@@ -2,29 +2,38 @@
 # -*- coding: utf-8 -*-
 
 import sublime
-import urllib2
 import os
 import sys
 import threading
 import atexit
 import time
-
 from functools import wraps
-from server.WebSocketServer import WebSocketServer
-from server.SimpleResourceServer import SimpleResourceServer
-from server.SimpleCallbackServer import SimpleCallbackServer
-from server.SimpleWSServer import SimpleWSServer
-from server.LiveReloadAPI import LiveReloadAPI
-from server.PluginAPI import PluginClass as Plugin
-from server.Settings import Settings
 
+try:
+    # Python 3
+    from .server.WebSocketServer import WebSocketServer
+    from .server.SimpleResourceServer import SimpleResourceServer
+    from .server.SimpleCallbackServer import SimpleCallbackServer
+    from .server.SimpleWSServer import SimpleWSServer
+    from .server.LiveReloadAPI import LiveReloadAPI
+    from .server.PluginAPI import PluginClass as Plugin
+    from .server.Settings import Settings
+
+except (ValueError):
+    # Python 2
+    from server.WebSocketServer import WebSocketServer
+    from server.SimpleResourceServer import SimpleResourceServer
+    from server.SimpleCallbackServer import SimpleCallbackServer
+    from server.SimpleWSServer import SimpleWSServer
+    from server.LiveReloadAPI import LiveReloadAPI
+    from server.PluginAPI import PluginInterface as Plugin
+    from server.Settings import Settings
 
 def singleton(cls):
     instances = {}
 
     def getinstance():
         if cls not in instances:
-            print 'new instance of', cls.__name__
             instances[cls] = cls()
         return instances[cls]
 
@@ -60,8 +69,7 @@ class LiveReload(threading.Thread, SimpleCallbackServer, SimpleWSServer, SimpleR
 
         try:
             self.start_server(self.port)
-        except Exception, e:
-            print e
+        except Exception:
             sublime.error_message('Port(' + str(self.port) + ') is already using, trying ('
                                   + str(self.port + 1) + ')')
             time.sleep(3)
@@ -110,7 +118,6 @@ def http_callback(callback_f):
             callback_f.__name__)
     sys.modules['LiveReload'].API.callbacks.append({'path': callback_f.path,
             'name': callback_f.__name__, 'cls': callback_f.__module__})
-    print 'LiveReload: added callback with url %s' % callback_f.path
     return callback_f
 
 
@@ -134,5 +141,4 @@ def websocket_callback(callback_f):
     callback_f.path = 'SM2.%s.%s' % (callback_f.__module__.lower(), callback_f.__name__)
     sys.modules['LiveReload'].API.ws_callbacks.append({'path': callback_f.path,
             'name': callback_f.__name__, 'cls': callback_f.__module__})
-    print 'LiveReload: added websocket callback with namespace %s' % callback_f.path
     return callback_f

@@ -1,13 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from WSRequestHandler import WSRequestHandler
+try:
+    from .WSRequestHandler import WSRequestHandler
+except ValueError:
+    from WSRequestHandler import WSRequestHandler
+
 from base64 import b64encode, b64decode
 import sublime
 from struct import pack, unpack_from
 import array
 import json
-import LiveReload
 
 try:
     from hashlib import md5, sha1
@@ -19,9 +22,7 @@ s2a = lambda s: [ord(c) for c in s]
 
 
 def log(s):
-    if False:
-        print 'WebSocketClient: ' + str(s)
-
+    pass
 
 class WebSocketClient(object):
 
@@ -80,7 +81,7 @@ Sec-WebSocket-Accept: %s\r
                 while 0x1:
                     try:
                         data = self.socket.recv(1024)
-                    except Exception, e:
+                    except Exception as e:
                         log(e)
                         break
                     if not data:
@@ -94,8 +95,8 @@ Sec-WebSocket-Accept: %s\r
                 # Close the client connection
 
                 self.close()
-        except Exception, e:
-
+        except Exception as e:
+            log(e)
             self.close()
 
     @staticmethod
@@ -276,8 +277,7 @@ Sec-WebSocket-Accept: %s\r
                 else:
                     LiveReload.API.dispatch_onReceive(req,
                             self.self.headers.get('Origin'))
-        except Exception, e:
-
+        except Exception as e:
             log(e)
 
     def _clean(self, msg):

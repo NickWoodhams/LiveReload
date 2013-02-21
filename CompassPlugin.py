@@ -46,6 +46,7 @@ class CompassPreprocessor(LiveReload.Plugin, sublime_plugin.EventListener):
 
     def on_post_save(self, view):
         self.original_filename = os.path.basename(view.file_name())
+        print(dir(self))
         if self.should_run(self.original_filename):
             self.file_name_to_refresh = self.original_filename.replace('.scss', '.css').replace('.sass', '.css')
             dirname = os.path.dirname(view.file_name())

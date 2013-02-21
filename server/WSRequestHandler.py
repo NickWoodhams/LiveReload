@@ -1,9 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+try:
+    from SimpleHTTPServer import SimpleHTTPRequestHandler
+except ImportError:
+    from http.server import SimpleHTTPRequestHandler
 
-from SimpleHTTPServer import SimpleHTTPRequestHandler
 import LiveReload
-import urlparse
+
+try:
+    import urlparse
+except ImportError:
+    import urllib.parse as urlparse
+
 import sys
 
 # HTTP handler with WebSocket upgrade support
@@ -55,9 +63,7 @@ class WSRequestHandler(SimpleHTTPRequestHandler):
                     else:
                         res = "Callback method not found"
                         self.send_response(404, 'Not Found')
-                    print res
-                except Exception, e:
-                    print e
+                except Exception as e:
                     self.send_response(500, 'Error')
                     res = e
                 

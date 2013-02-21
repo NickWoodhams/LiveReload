@@ -3,10 +3,14 @@
 
 import os
 import json
+
+def log(msg):
+    pass
+
 try:
     import sublime
-except Exception, e:
-    print e
+except Exception as e:
+    log(e)
 
 
 class Settings(dict):
@@ -20,15 +24,15 @@ class Settings(dict):
             file_object.close()
             for i in range(len(data)):
                 self[data.keys()[i]] = data[data.keys()[i]]
-            print 'LiveReload: Settings loaded'
-        except Exception, e:
-            print e
+            log('LiveReload: Settings loaded')
+        except Exception as e:
+            log(e)
             
     def save(self):
         file_object = open(self.file_name, 'w')
         json.dump(self, file_object, indent=5)
         file_object.close()
-        print 'LiveReload: Settings saved'
+        log('LiveReload: Settings saved')
 
     def get(self, key, default=None):
         try:
