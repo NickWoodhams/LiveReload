@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/dz0ny/LiveReload-sublimetext2.png)](https://travis-ci.org/dz0ny/LiveReload-sublimetext2)
+
 LiveReload for Sublime Text 2
 =========
 
