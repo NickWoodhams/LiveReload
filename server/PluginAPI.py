@@ -161,13 +161,11 @@ class PluginClass:
         this_plugin = self.file_types.split(',')
 
         if [f for f in this_plugin if filename.endswith(f)]:
-            log('unique', self.name, filename)
             return True
         elif self.file_types is '*' and otherPluginsWithFilter():
 
             # no other defined filters and this filter is *
 
-            log('catchall', self.name, filename)
             return True
         else:
             return False

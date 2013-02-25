@@ -1,5 +1,9 @@
 [
     {
+        "caption": "LiveReload: Self test",
+        "command": "live_reload_test"
+    },
+    {
         "caption": "LiveReload: Help",
         "command": "live_reload_help"
     },

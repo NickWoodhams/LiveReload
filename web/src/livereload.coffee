@@ -10,9 +10,22 @@ class LiveReload
     @plugins = []
     @pluginIdentifiers = {}
 
+    livelog = (msg)->
+      console.log "livelog", msg
+      b = document.getElementsByTagName 'body'
+      p = document.createElement "p"
+      text = document.createTextNode msg
+      p.appendChild(text)
+      b[0].appendChild(p)
+
     # i can haz console?
     @console = if @window.location.href.match(/LR-verbose/) && @window.console && @window.console.log && @window.console.error
       @window.console
+    else if @window.location.href.match(/LiveTest/)
+      log:(msg)->
+        livelog msg
+      error:(msg)->
+        livelog msg
     else
       log:   ->
       error: ->

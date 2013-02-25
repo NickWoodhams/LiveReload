@@ -830,12 +830,29 @@ var LiveReload;
 LiveReload = (function() {
 
   function LiveReload(window) {
-    var _this = this;
+    var livelog,
+      _this = this;
     this.window = window;
     this.listeners = {};
     this.plugins = [];
     this.pluginIdentifiers = {};
-    this.console = this.window.location.href.match(/LR-verbose/) && this.window.console && this.window.console.log && this.window.console.error ? this.window.console : {
+    livelog = function(msg) {
+      var b, p, text;
+      console.log("livelog", msg);
+      b = document.getElementsByTagName('body');
+      p = document.createElement("p");
+      text = document.createTextNode(msg);
+      p.appendChild(text);
+      return b[0].appendChild(p);
+    };
+    this.console = this.window.location.href.match(/LR-verbose/) && this.window.console && this.window.console.log && this.window.console.error ? this.window.console : this.window.location.href.match(/LiveTest/) ? {
+      log: function(msg) {
+        return livelog(msg);
+      },
+      error: function(msg) {
+        return livelog(msg);
+      }
+    } : {
       log: function() {},
       error: function() {}
     };

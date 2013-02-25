@@ -4,12 +4,23 @@
 import sublime
 import sublime_plugin
 import LiveReload
+import webbrowser
+import os
+
+
+class LiveReloadTest(sublime_plugin.ApplicationCommand):
+
+    def run(self):
+        path = os.path.join(sublime.packages_path(), 'LiveReload', 'web')
+        file_name = os.path.join(path, 'test.html')
+        webbrowser.open_new_tab("file://"+file_name)
 
 
 class LiveReloadHelp(sublime_plugin.ApplicationCommand):
 
     def run(self):
-        pass
+        webbrowser.open_new_tab('https://github.com/dz0ny/LiveReload-sublimetext2/'
+                                )
 
 
 class LiveReloadEnablePluginCommand(sublime_plugin.ApplicationCommand):
