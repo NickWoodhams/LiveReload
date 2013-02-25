@@ -5,12 +5,14 @@ import LiveReload
 import json
 import sublime
 try:
-  from .Settings import Settings
+    from .Settings import Settings
 except ValueError:
-  from Settings import Settings
+    from Settings import Settings
+
 
 def log(msg):
-    print(msg)
+    pass
+
 
 class PluginFactory(type):
 
@@ -19,85 +21,91 @@ class PluginFactory(type):
     """
 
     def __init__(
-        cls,
+        mcs,
         name,
         bases,
         attrs,
         ):
 
-        if not hasattr(cls, 'plugins'):
-            cls.settings = Settings()
-            cls.plugins = []
-            cls.enabled_plugins = cls.settings.get('enabled_plugins', [])
+        if not hasattr(mcs, 'plugins'):
+            mcs.settings = Settings()
+            mcs.plugins = []
+            mcs.enabled_plugins = mcs.settings.get('enabled_plugins',
+                    [])
         else:
-            log('LiveReload new plugin: ' + cls.__name__)
+            log('LiveReload new plugin: ' + mcs.__name__)
 
             # remove old plug-in
 
-            for plugin in cls.plugins:
-                if plugin.__name__ == cls.__name__:
-                    cls.plugins.remove(plugin)
-            cls.plugins.append(cls)
+            for plugin in mcs.plugins:
+                if plugin.__name__ == mcs.__name__:
+                    mcs.plugins.remove(plugin)
+            mcs.plugins.append(mcs)
 
-    def togglePlugin(cls, index):
+    def togglePlugin(mcs, index):
 
-        plugin = cls.plugins[index]()
+        plugin = mcs.plugins[index]()
 
-        if plugin.name in cls.enabled_plugins:
-            cls.enabled_plugins.remove(plugin.name)
+        if plugin.name in mcs.enabled_plugins:
+            mcs.enabled_plugins.remove(plugin.name)
             sublime.set_timeout(lambda : \
                                 sublime.status_message('"%s" the LiveReload plug-in has been disabled!'
                                  % plugin.title), 100)
             plugin.onDisabled()
         else:
-            cls.enabled_plugins.append(plugin.name)
+            mcs.enabled_plugins.append(plugin.name)
             sublime.set_timeout(lambda : \
                                 sublime.status_message('"%s" the LiveReload plug-in has been enabled!'
                                  % plugin.title), 100)
             plugin.onEnabled()
 
-        #should only save permanent plug-ins
-        p_enabled_plugins =[]
-        for p in cls.enabled_plugins:
-            log(cls.getPlugin(p).this_session_only)
-            if cls.getPlugin(p).this_session_only is not True:
-                p_enabled_plugins.append(p)        
-        cls.settings.set('enabled_plugins', p_enabled_plugins)
+        # should only save permanent plug-ins
 
-    def getPlugin(cls, className):
-        for p in cls.plugins:
+        p_enabled_plugins = []
+        for p in mcs.enabled_plugins:
+            try:
+                if mcs.getPlugin(p).this_session_only is not True:
+                    p_enabled_plugins.append(p)
+            except Exception:
+                pass
+        mcs.settings.set('enabled_plugins', p_enabled_plugins)
+
+    def getPlugin(mcs, className):
+        for p in mcs.plugins:
             if p.__name__ == className:
                 return p()  # instance
         return False
 
-    def listAllDefinedFilters(cls):
+    def listAllDefinedFilters(mcs):
         file_types = []
-        for plugin in cls.plugins:
-            if plugin.__name__ in cls.enabled_plugins:
-                if not plugin.file_types is "*":
+        for plugin in mcs.plugins:
+            if plugin.__name__ in mcs.enabled_plugins:
+                if not plugin.file_types is '*':
                     for ext in plugin.file_types.split(','):
                         file_types.append(ext)
         return file_types
 
-    def listPlugins(cls):
+    def listPlugins(mcs):
         plist = []
-        for plugin in cls.plugins:
+        for plugin in mcs.plugins:
             p = []
-            if plugin.__name__ in cls.enabled_plugins:
+            if plugin.__name__ in mcs.enabled_plugins:
                 p.append('Disable - ' + str(plugin.title))
             else:
                 if plugin.this_session_only is not True:
                     p.append('Enable - ' + str(plugin.title))
                 else:
-                    p.append('Enable - ' + str(plugin.title) + ' (this session)')
+                    p.append('Enable - ' + str(plugin.title)
+                             + ' (this session)')
             if plugin.description:
-                p.append(str(plugin.description) + ' (' + str(plugin.file_types) + ')')
+                p.append(str(plugin.description) + ' ('
+                         + str(plugin.file_types) + ')')
             plist.append(p)
         return plist
 
-    def dispatch_OnReceive(cls, data, origin):
-        log(data, origin)
-        for plugin in cls.plugins:
+    def dispatch_OnReceive(mcs, data, origin):
+        log(data)
+        for plugin in mcs.plugins:
             try:
                 plugin().onReceive(data, origin)
             except Exception as e:
@@ -106,14 +114,16 @@ class PluginFactory(type):
             _wscallback = LiveReload.API.has_callback(data.path)
             if _wscallback:
                 try:
-                    func = getattr(sys.modules['LiveReload'].Plugin.getPlugin(_wscallback['cls']), _wscallback['name'], None)
+                    func = getattr(sys.modules['LiveReload'
+                                   ].Plugin.getPlugin(_wscallback['mcs'
+                                   ]), _wscallback['name'], None)
                     if func:
-                        func(req)
+                        func(data)
                 except Exception as e:
                     log(e)
-
         except Exception:
-            log("no WS handler")
+
+            log('no WS handler')
 
 
 class PluginClass:
@@ -139,8 +149,9 @@ class PluginClass:
 
     def should_run(self, filename=False):
         """ Returns True if specified filename is allowed for plug-in, and plug-in itself is enabled """
+
         all_filters = LiveReload.Plugin.listAllDefinedFilters()
-        
+
         def otherPluginsWithFilter():
             for f in all_filters:
                 if filename.endswith(f):
@@ -150,11 +161,13 @@ class PluginClass:
         this_plugin = self.file_types.split(',')
 
         if [f for f in this_plugin if filename.endswith(f)]:
-            log("unique", self.name, filename)
+            log('unique', self.name, filename)
             return True
         elif self.file_types is '*' and otherPluginsWithFilter():
-            #no other defined filters and this filter is *
-            log("catchall", self.name, filename)
+
+            # no other defined filters and this filter is *
+
+            log('catchall', self.name, filename)
             return True
         else:
             return False
@@ -162,7 +175,7 @@ class PluginClass:
     def addResource(
         self,
         req_path,
-        buffer,
+        blob,
         content_type='text/plain',
         ):
         """
@@ -171,15 +184,21 @@ class PluginClass:
         - (string) content_type; Mime-type of file you want to serve
         """
 
-        LiveReload.API.add_static_file(req_path, buffer, content_type)
+        LiveReload.API.add_static_file(req_path, blob, content_type)
 
-    def sendCommand(self, command, settings, filename=False):
+    def sendCommand(
+        self,
+        command,
+        settings,
+        filename=False,
+        ):
         """
         - (instance) plug-in; instance
         - (string) command; to trigger in livereload.js (refresh, info, or one of the plugins)
         - (object) settings; additional data that gets passed to command (should be json parsable)
         - (string) original name of file
         """
+
         if self.isEnabled:
             if command is 'refresh':  # to support new protocol
                 settings['command'] = 'reload'
@@ -187,16 +206,18 @@ class PluginClass:
                 if not filename:
                     filename = settings['path'].strip(' ')
             except Exception:
-                log("Missing path definition")
+                log('Missing path definition')
 
             if self.should_run(filename):
-                sublime.set_timeout(lambda : sublime.status_message('LiveReload refresh from %s'
-                                    % self.name), 100)
+                sublime.set_timeout(lambda : \
+                                    sublime.status_message('LiveReload refresh from %s'
+                                     % self.name), 100)
+
                 # if we have defined filter
+
                 LiveReload.API.send(json.dumps(settings))
             else:
-                log('Skipping ', self.name)
-            
+                log('Skipping '+ self.name)
 
     def refresh(self, filename, settings=None):
         """
@@ -211,13 +232,15 @@ class PluginClass:
                 'path': filename,
                 'apply_js_live': self.settings.get('apply_js_live'),
                 'apply_css_live': self.settings.get('apply_css_live'),
-                'apply_images_live': self.settings.get('apply_images_live'),
+                'apply_images_live': self.settings.get('apply_images_live'
+                        ),
                 }
 
         self.sendCommand('refresh', settings)
 
     def listClients(self):
         """ returns list with all connected clients with their req_url and origin"""
+
         return LiveReload.API.list_clients()
 
     def onReceive(self, data, origin):
@@ -226,28 +249,37 @@ class PluginClass:
         - (string) data sent by browser
         - (string) origin of data
         """
+
         pass
 
     def onEnabled(self):
         """ Runs when plug-in is enabled via menu"""
+
         pass
 
     def onDisabled(self):
         """ Runs when plug-in is disabled via menu"""
+
         pass
 
     @property
     def this_session_only(self):
         """ Should it stay enabled forever or this session only """
+
         return False
 
     @property
     def file_types(self):
         """ Run plug-in only with this file extensions, defaults to all extensions"""
+
         return '*'
 
+
 ##black magic, python2 vs python3
+
 try:
-    PluginInterface = PluginFactory('PluginInterface', (object,PluginClass, ), {})
+    PluginInterface = PluginFactory('PluginInterface', (object,
+                                    PluginClass), {})
 except TypeError:
-    PluginInterface = PluginFactory('PluginInterface', (PluginClass, ), {})
+    PluginInterface = PluginFactory('PluginInterface', (PluginClass, ),
+                                    {})

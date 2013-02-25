@@ -1,5 +1,3 @@
 {
-     "enabled_plugins": [], 
-     "version": "2.0", 
-     "port": 35729
+     "enabled_plugins": []
 }

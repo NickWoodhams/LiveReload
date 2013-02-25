@@ -7,10 +7,11 @@ import sys
 import threading
 import atexit
 import time
-from functools import wraps
 
 try:
+
     # Python 3
+
     from .server.WebSocketServer import WebSocketServer
     from .server.SimpleResourceServer import SimpleResourceServer
     from .server.SimpleCallbackServer import SimpleCallbackServer
@@ -18,9 +19,10 @@ try:
     from .server.LiveReloadAPI import LiveReloadAPI
     from .server.PluginAPI import PluginInterface as Plugin
     from .server.Settings import Settings
+except ValueError:
 
-except (ValueError):
     # Python 2
+
     from server.WebSocketServer import WebSocketServer
     from server.SimpleResourceServer import SimpleResourceServer
     from server.SimpleCallbackServer import SimpleCallbackServer
@@ -28,6 +30,7 @@ except (ValueError):
     from server.LiveReloadAPI import LiveReloadAPI
     from server.PluginAPI import PluginInterface as Plugin
     from server.Settings import Settings
+
 
 def singleton(cls):
     instances = {}
@@ -39,8 +42,9 @@ def singleton(cls):
 
     return getinstance
 
-@singleton
-class LiveReload(threading.Thread, SimpleCallbackServer, SimpleWSServer, SimpleResourceServer, LiveReloadAPI):
+
+class LiveReload(threading.Thread, SimpleCallbackServer,
+    SimpleWSServer, SimpleResourceServer, LiveReloadAPI):
 
     """
     Start the LiveReload, which exposes public api.
@@ -59,9 +63,11 @@ class LiveReload(threading.Thread, SimpleCallbackServer, SimpleWSServer, SimpleR
         Start LiveReload
         """
 
-        path = os.path.join(sublime.packages_path(), 'LiveReload', 'web', 'dist', 'livereloadjs-sm2.js')
+        path = os.path.join(sublime.packages_path(), 'LiveReload', 'web'
+                            , 'dist', 'livereloadjs-sm2.js')
         local = open(path, 'rU')
-        self.add_static_file('/livereload.js', local.read(), 'text/javascript')
+        self.add_static_file('/livereload.js', local.read(),
+                             'text/javascript')
 
         settings = Settings()
         self.port = settings.get('port', 35729)
@@ -70,7 +76,8 @@ class LiveReload(threading.Thread, SimpleCallbackServer, SimpleWSServer, SimpleR
         try:
             self.start_server(self.port)
         except Exception:
-            sublime.error_message('Port(' + str(self.port) + ') is already using, trying ('
+            sublime.error_message('Port(' + str(self.port)
+                                  + ') is already using, trying ('
                                   + str(self.port + 1) + ')')
             time.sleep(3)
             self.start_server(self.port + 1)
@@ -91,7 +98,8 @@ class LiveReload(threading.Thread, SimpleCallbackServer, SimpleWSServer, SimpleR
 
         self.ws_server.stop()
 
-if not sublime.platform is "build":
+
+if not sublime.platform is 'build':
     try:
         sys.modules['LiveReload'].API
     except Exception:
@@ -106,7 +114,7 @@ def http_callback(callback_f):
 
     Example:
     ::
-    
+
         @LiveReload.http_callback
         def compiled(self, req):
             print req # urlparse object
@@ -114,9 +122,10 @@ def http_callback(callback_f):
 
     """
 
-    callback_f.path = 'http://localhost:35729/callback/%s/%s' % (callback_f.__module__.lower(),
-            callback_f.__name__)
-    sys.modules['LiveReload'].API.callbacks.append({'path': callback_f.path,
+    callback_f.path = 'http://localhost:35729/callback/%s/%s' \
+        % (callback_f.__module__.lower(), callback_f.__name__)
+    sys.modules['LiveReload'
+                ].API.callbacks.append({'path': callback_f.path,
             'name': callback_f.__name__, 'cls': callback_f.__module__})
     return callback_f
 
@@ -138,7 +147,9 @@ def websocket_callback(callback_f):
 
     """
 
-    callback_f.path = 'SM2.%s.%s' % (callback_f.__module__.lower(), callback_f.__name__)
-    sys.modules['LiveReload'].API.ws_callbacks.append({'path': callback_f.path,
+    callback_f.path = 'SM2.%s.%s' % (callback_f.__module__.lower(),
+            callback_f.__name__)
+    sys.modules['LiveReload'
+                ].API.ws_callbacks.append({'path': callback_f.path,
             'name': callback_f.__name__, 'cls': callback_f.__module__})
     return callback_f

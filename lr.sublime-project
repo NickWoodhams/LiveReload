@@ -1,22 +1,16 @@
 {
-	"folders":
-	[
-		{
-			"path": "/home/dz0ny/LiveReload"
-		},
-		{
-			"path": "/home/dz0ny/.config/sublime-text-2/Packages/LiveReload Markdown"
-		},
-		{
-			"path": "/usr/lib/sublime-text-2"
-		}
-	],
-	"settings":
-	{
-		"pylinter":
-		{
-			"pylint_path": "/usr/bin/pylint",
-			"pylint_rc": "/home/dz0ny/LiveReload/pylint.rc"
-		}
-	}
+ "folders": [
+  {
+   "path": "/home/dz0ny/LiveReload"
+  }, 
+  {
+   "path": "/home/dz0ny/.config/sublime-text-2/Packages/"
+  }
+ ], 
+ "settings": {
+  "pylinter": {
+   "pylint_rc": "/home/dz0ny/LiveReload/pylint.rc", 
+   "pylint_path": "/usr/bin/pylint"
+  }
+ }
 }
