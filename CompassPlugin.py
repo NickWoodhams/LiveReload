@@ -33,18 +33,28 @@ class CompassThread(threading.Thread):
               }
             }
         """
-        view_settings = sublime.active_window().active_view().settings()
-        view_settings = view_settings.get('lrcompass')
-        if view_settings:
-            return view_settings
-        else:
+        try:
+            view_settings = sublime.active_window().active_view().settings()
+            view_settings = view_settings.get('lrcompass')
+            if view_settings:
+                return view_settings
+            else:
+                return {}
+        except Exception:
             return {}
 
     def __init__(self, dirname, on_compile):
-
-        self.dirname = self.getLocalOverride.get('dirname') \
+        ##TODO: Proper handler for this
+        try:
+            self.dirname = self.getLocalOverride.get('dirname') \
             or dirname.replace('\\', '/')
-        self.command = self.getLocalOverride.get('command') or 'compass compile'
+        except Exception:
+            self.dirname = dirname.replace('\\', '/')
+        try:
+            self.command = self.getLocalOverride.get('command') or 'compass compile'
+        except Exception:
+            self.command = 'compass compile'
+
         self.stdout = None
         self.stderr = None
         self.on_compile = on_compile
