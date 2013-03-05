@@ -31,7 +31,7 @@ For now it only works with self loading version:
     <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 
 
-### [Firefox 4 extension](https://addons.mozilla.org/firefox/addon/livereload/)
+### [Firefox 4 extension](http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions-)
 
 ![](http://static-cdn.addons.mozilla.net/img/uploads/previews/full/63/63478.png?modified=1317506904)
 
