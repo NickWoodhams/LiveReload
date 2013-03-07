@@ -8,6 +8,9 @@ Installing
 
 Install with [Sublime Package Control](http://wbond.net/sublime_packages/package_control "Sublime Package Control"), search for LiveReload and install.
 
+Devel branch
+-----
+Have a look at [devel version](https://github.com/dz0ny/LiveReload-sublimetext2/tree/devel). Which is total rewrite of plugin, supporting SublimeText 3, plugins and much more.
 
 Browser extensions
 -----
