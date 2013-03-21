@@ -48,11 +48,12 @@ class CompassThread(threading.Thread):
         try:
             self.dirname = self.getLocalOverride.get('dirname') \
             or dirname.replace('\\', '/')
-        except Exception:
+        except Exception as e:
             self.dirname = dirname.replace('\\', '/')
+            
         try:
             self.command = self.getLocalOverride.get('command') or 'compass compile'
-        except Exception:
+        except Exception as e:
             self.command = 'compass compile'
 
         self.stdout = None
@@ -60,13 +61,23 @@ class CompassThread(threading.Thread):
         self.on_compile = on_compile
         threading.Thread.__init__(self)
 
+    def check_for_compass_config(self):
+        return os.path.isfile(os.path.join(self.dirname, "config.rb"))
+
     def run(self):
+        if not self.check_for_compass_config():
+            self.dirname = os.path.abspath(os.path.join(self.dirname, os.pardir))
+            if not self.check_for_compass_config():
+                sublime.error_message("Could not find Compass config.rb. Please check your sublime-project file and adjust settings accordingly!")
+                return
         cmd = shlex.split(self.command)
         cmd.append(self.dirname)
-        p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
+        p = subprocess.Popen(cmd, shell=False, stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT)
-        if p.stdout.read():
+        compiled = p.stdout.read()
+        if compiled:
+            print(compiled)
             self.on_compile()
 
 
