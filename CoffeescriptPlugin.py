@@ -15,7 +15,7 @@ LiveReload = __import__('LiveReload')
 sys.path.remove(os.path.join(sublime.packages_path(), 'LiveReload'))
 
 
-class LessThread(threading.Thread):
+class CoffeeThread(threading.Thread):
 
     def getLocalOverride(self):
         """
@@ -26,14 +26,14 @@ class LessThread(threading.Thread):
         Example: 
 
             "settings": {
-              "lesscompass": {
+              "coffeecompass": {
                 "command": "compass compile -e production --force"
               }
             }
         """
         try:
             view_settings = sublime.active_window().active_view().settings()
-            view_settings = view_settings.get('lrless')
+            view_settings = view_settings.get('lrcoffee')
             if view_settings:
                 return view_settings
             else:
@@ -51,12 +51,10 @@ class LessThread(threading.Thread):
             or dirname.replace('\\', '/')
         except Exception as e:
             self.dirname = dirname.replace('\\', '/')
-            # print(e)
         try:
-            self.command = self.getLocalOverride.get('command') or 'lessc --verbose'
+            self.command = self.getLocalOverride.get('command') or 'coffee -c'
         except Exception as e:
-            self.command = 'lessc --verbose'
-            # print(e)
+            self.command = 'coffee -c'
 
         self.stdout = None
         self.stderr = None
@@ -64,22 +62,25 @@ class LessThread(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        cmd = self.command + " " + self.filename + " " + self.filename.replace('.less','.css')
+        cmd = self.command + " " + self.filename + " " + self.filename.replace('.coffee','.js')
 
         p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT)
         test = p.stdout.read()
-        if test:
-            print("ATSDFASDFASDFASD!!")
-            print(test)
+        # if there is no result, everything worked Great!
+        if not test:
             self.on_compile()
+        else:
+            # something went wrong...
+            err = test.split('\n')
+            sublime.error_message(err[0])
 
 class lessPreprocessor(LiveReload.Plugin, sublime_plugin.EventListener):
 
-    title = 'Less Preprocessor'
-    description = 'Less Compile and refresh page, when file is compiled'
-    file_types = '.less'
+    title = 'CoffeeScript Preprocessor'
+    description = 'Coffeescript Compile and refresh page, when file is compiled'
+    file_types = '.coffee'
     this_session_only = True
     file_name = ''
 
@@ -88,16 +89,16 @@ class lessPreprocessor(LiveReload.Plugin, sublime_plugin.EventListener):
 
         if self.should_run(self.original_filename):
             self.file_name_to_refresh = \
-                self.original_filename.replace('.less', '.css')
+                self.original_filename.replace('.coffee', '.js')
             dirname = os.path.dirname(view.file_name())
-            LessThread(dirname, self.on_compile, self.original_filename).start()
+            CoffeeThread(dirname, self.on_compile, self.original_filename).start()
 
     def on_compile(self):
         print(self.file_name_to_refresh)
         settings = {
             'path': self.file_name_to_refresh,
             'apply_js_live': False,
-            'apply_css_live': True,
-            'apply_images_live': True,
+            'apply_css_live': False,
+            'apply_images_live': False,
             }
         self.sendCommand('refresh', settings, self.original_filename)

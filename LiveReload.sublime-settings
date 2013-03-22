@@ -1,3 +1,5 @@
 {
-     "enabled_plugins": []
+     "enabled_plugins": [
+          "SimpleRefresh"
+     ]
 }
