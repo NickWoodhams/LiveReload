@@ -149,24 +149,23 @@ class PluginClass:
 
     def should_run(self, filename=False):
         """ Returns True if specified filename is allowed for plug-in, and plug-in itself is enabled """
+        if self.isEnabled:
+            all_filters = LiveReload.Plugin.listAllDefinedFilters()
 
-        all_filters = LiveReload.Plugin.listAllDefinedFilters()
+            def otherPluginsWithFilter():
+                for f in all_filters:
+                    if filename.endswith(f):
+                        return False
+                return True
 
-        def otherPluginsWithFilter():
-            for f in all_filters:
-                if filename.endswith(f):
-                    return False
-            return True
+            this_plugin = self.file_types.split(',')
 
-        this_plugin = self.file_types.split(',')
-
-        if [f for f in this_plugin if filename.endswith(f)]:
-            return True
-        elif self.file_types is '*' and otherPluginsWithFilter():
-
-            # no other defined filters and this filter is *
-
-            return True
+            if [f for f in this_plugin if filename.endswith(f)]:
+                return True
+            elif self.file_types is '*' and otherPluginsWithFilter():
+                return True
+            else:
+                return False
         else:
             return False
 
