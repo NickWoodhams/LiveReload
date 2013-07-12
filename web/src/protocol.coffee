@@ -1,3 +1,4 @@
+# CoffeeScript: bare: true 
 
 PROTOCOL_6 = 'http://livereload.com/protocols/official-6'
 PROTOCOL_7 = 'http://livereload.com/protocols/official-7'

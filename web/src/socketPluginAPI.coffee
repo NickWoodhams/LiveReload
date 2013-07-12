@@ -1,3 +1,5 @@
+# CoffeeScript: bare: true 
+
 class SocketPlugin
   @identifier = 'socket'
   @version = '1.0'

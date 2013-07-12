@@ -1,3 +1,4 @@
+# CoffeeScript: bare: true 
 class LessPlugin
   @identifier = 'less'
   @version = '1.0'

@@ -1,3 +1,5 @@
+# CoffeeScript: bare: true 
+
 #= require connector
 #= require timer
 #= require options
@@ -128,7 +130,7 @@ class LiveReload
 
       # official API
       console: @console
-      Timer: Timer
+      Timer: new Timer
       generateCacheBustUrl: (url) => @reloader.generateCacheBustUrl(url)
 
     # API that pluginClass can/must provide:
@@ -170,4 +172,4 @@ class LiveReload
 
     for plugin in @plugins
       if plugin.constructor.identifier == message.identifier
-        plugin?.processCommand? message       
+        plugin?.processCommand? message.payload

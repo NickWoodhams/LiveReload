@@ -1,6 +1,6 @@
 Changelog:
 
-Please be sure to restart Sublime Text 2 to start using this new version. For more information or how to use this plugin visit https://github.com/dz0ny/LiveReload-sublimetext2/blob/master/README.md 
+Please be sure to restart Sublime Text to start using this new version. For more information or how to use this plugin visit https://github.com/dz0ny/LiveReload-sublimetext2/blob/devel/README.md 
 
 New Features
  - Support v2 of protocol
@@ -8,7 +8,5 @@ New Features
  - Plug-in API(you can write your own plug-ins)
  - Plug-ins:
   * Simple reload, demonstrates simple reloading
-  * Markdown preview, demonstrates new JS API plug-ins, with two-way communication
   * Build plug-in, demonstrates simple callback operation via native call
-  * Chrome remote CSS edit plug-in(You can edit CSS in Google Chrome and it gets reflected back in Sublime Text)
 

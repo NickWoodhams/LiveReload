@@ -13,15 +13,19 @@ LiveReload = __import__('LiveReload')
 sys.path.remove(os.path.join(sublime.packages_path(), 'LiveReload'))
 
 ##Modlue name must be the same as class or else callbacks won't work
-class SimpleWSCallback(LiveReload.Plugin):
+class SimpleWSCallback(LiveReload.Plugin, sublime_plugin.EventListener):
 
-    title = 'Simple Reload from websocket request'
+    title = 'Send content on change'
     description = \
-        'Refresh page with liverelaod.plugins.SimpleWSCallback.on_post_compile(object)'
+        'Send file content to browser console'
     file_types = '*'
     this_session_only = True
 
-    @LiveReload.websocket_callback
-    def on_post_compile(self, req):
-        self.refresh(os.path.basename(sublime.active_window().active_view().file_name()))
-        return 'All ok from SimpleRefreshCallBack!'
+    def on_modified_async(self, view):
+      if self.isEnabled:
+        source = view.file_name()
+        with open(source, 'rU') as f:
+          self.sendRaw("socket", f.read())
+        
+    def onReceive(self, data, origin):
+      print(data)

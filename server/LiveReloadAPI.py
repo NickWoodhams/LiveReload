@@ -11,7 +11,7 @@ except ValueError:
 from functools import wraps
 
 def log(msg):
-  pass
+  print(msg)
 
 class LiveReloadAPI(object):
 
@@ -56,9 +56,10 @@ class LiveReloadAPI(object):
           LiveReload.API.send(data)
         """
         try:
+          log(data)
           self.ws_server.send(data)
         except Exception as e:
-          self.start_server(self.port)
+          log(e)
         
 
     def list_clients(self):

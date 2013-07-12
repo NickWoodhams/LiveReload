@@ -26,8 +26,8 @@ class CoffeeThread(threading.Thread):
         Example: 
 
             "settings": {
-              "coffeecompass": {
-                "command": "compass compile -e production --force"
+              "coffee": {
+                "command": "coffee -cv --maps"
               }
             }
         """
@@ -76,7 +76,7 @@ class CoffeeThread(threading.Thread):
             err = test.split('\n')
             sublime.error_message(err[0])
 
-class lessPreprocessor(LiveReload.Plugin, sublime_plugin.EventListener):
+class coffeePreprocessor(LiveReload.Plugin, sublime_plugin.EventListener):
 
     title = 'CoffeeScript Preprocessor'
     description = 'Coffeescript Compile and refresh page, when file is compiled'
