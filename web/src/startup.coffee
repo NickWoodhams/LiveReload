@@ -1,3 +1,5 @@
+# CoffeeScript: bare: true 
+
 #= require customevents
 #= require livereload
 #= require socketPluginAPI

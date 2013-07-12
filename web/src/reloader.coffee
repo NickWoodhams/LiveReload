@@ -1,3 +1,5 @@
+# CoffeeScript: bare: true 
+
 splitUrl = (url) ->
   if (index = url.indexOf('#')) >= 0
     hash = url.slice(index)

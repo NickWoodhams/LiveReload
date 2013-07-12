@@ -1,14 +1,19 @@
+# CoffeeScript: bare: true 
+
 class Timer
   constructor: (@func) ->
-    @running = no; @id = null
+    @running = no
+    @id = null
     @_handler = =>
-      @running = no; @id = null
+      @running = no
+      @id = null
       @func()
 
-  start: (timeout) ->
+  start: (timeout, func) ->
     # setTimeout func, timeout
     clearTimeout @id if @running
-    @id = setTimeout @_handler, timeout
+    handle = if func? then func else @_handler
+    @id = setTimeout handle, timeout
     @running = yes
 
   stop: ->

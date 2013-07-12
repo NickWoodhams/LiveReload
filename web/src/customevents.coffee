@@ -1,3 +1,4 @@
+# CoffeeScript: bare: true 
 class CustomEvents
   @bind: (element, eventName, handler) ->
     if element.addEventListener

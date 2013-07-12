@@ -2,7 +2,6 @@
 var CustomEvents;
 
 CustomEvents = (function() {
-
   function CustomEvents() {}
 
   CustomEvents.bind = function(element, eventName, handler) {
@@ -47,7 +46,6 @@ PROTOCOL_6 = 'http://livereload.com/protocols/official-6';
 PROTOCOL_7 = 'http://livereload.com/protocols/official-7';
 
 ProtocolError = ProtocolError = (function() {
-
   function ProtocolError(reason, data) {
     this.message = "LiveReload protocol error (" + reason + ") after receiving data: \"" + data + "\".";
   }
@@ -57,7 +55,6 @@ ProtocolError = ProtocolError = (function() {
 })();
 
 Parser = Parser = (function() {
-
   function Parser(handlers) {
     this.handlers = handlers;
     this.reset();
@@ -68,9 +65,9 @@ Parser = Parser = (function() {
   };
 
   Parser.prototype.process = function(data) {
-    var command, message, options, _ref;
+    var command, e, message, options, _ref;
     try {
-      if (!(this.protocol != null)) {
+      if (this.protocol == null) {
         if (data.match(/^!!ver:([\d.]+)$/)) {
           this.protocol = 6;
         } else if (message = this._parseMessage(data, ['hello'])) {
@@ -103,7 +100,8 @@ Parser = Parser = (function() {
         message = this._parseMessage(data, ['reload', 'alert', 'url', 'plugin']);
         return this.handlers.message(message);
       }
-    } catch (e) {
+    } catch (_error) {
+      e = _error;
       if (e instanceof ProtocolError) {
         return this.handlers.error(e);
       } else {
@@ -113,10 +111,11 @@ Parser = Parser = (function() {
   };
 
   Parser.prototype._parseMessage = function(data, validCommands) {
-    var message, _ref;
+    var e, message, _ref;
     try {
       message = JSON.parse(data);
-    } catch (e) {
+    } catch (_error) {
+      e = _error;
       throw new ProtocolError('unparsable JSON', data);
     }
     if (!message.command) {
@@ -137,7 +136,6 @@ var Connector, Version;
 Version = '2.0.8';
 
 Connector = (function() {
-
   function Connector(options, WebSocket, Timer, handlers) {
     var _this = this;
     this.options = options;
@@ -287,7 +285,6 @@ Connector = (function() {
 var Timer;
 
 Timer = (function() {
-
   function Timer(func) {
     var _this = this;
     this.func = func;
@@ -300,11 +297,13 @@ Timer = (function() {
     };
   }
 
-  Timer.prototype.start = function(timeout) {
+  Timer.prototype.start = function(timeout, func) {
+    var handle;
     if (this.running) {
       clearTimeout(this.id);
     }
-    this.id = setTimeout(this._handler, timeout);
+    handle = func != null ? func : this._handler;
+    this.id = setTimeout(handle, timeout);
     return this.running = true;
   };
 
@@ -323,7 +322,6 @@ Timer = (function() {
 var Options;
 
 Options = (function() {
-
   function Options() {
     this.host = null;
     this.port = 35729;
@@ -466,7 +464,6 @@ IMAGE_STYLES = [
 ];
 
 Reloader = Reloader = (function() {
-
   function Reloader(window, console, Timer) {
     this.window = window;
     this.console = console;
@@ -485,14 +482,14 @@ Reloader = Reloader = (function() {
   };
 
   Reloader.prototype.reload = function(path, options) {
-    var plugin, _base, _i, _len, _ref, _ref1;
+    var plugin, _base, _i, _len, _ref;
     this.options = options;
-    if ((_ref = (_base = this.options).stylesheetReloadTimeout) == null) {
+    if ((_base = this.options).stylesheetReloadTimeout == null) {
       _base.stylesheetReloadTimeout = 15000;
     }
-    _ref1 = this.plugins;
-    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-      plugin = _ref1[_i];
+    _ref = this.plugins;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      plugin = _ref[_i];
       if (plugin.reload && plugin.reload(path, options)) {
         return;
       }
@@ -549,11 +546,11 @@ Reloader = Reloader = (function() {
   };
 
   Reloader.prototype.reloadStylesheetImages = function(styleSheet, path, expando) {
-    var rule, rules, styleNames, _i, _j, _len, _len1;
+    var e, rule, rules, styleNames, _i, _j, _len, _len1;
     try {
       rules = styleSheet != null ? styleSheet.cssRules : void 0;
-    } catch (e) {
-
+    } catch (_error) {
+      e = _error;
     }
     if (!rules) {
       return;
@@ -654,11 +651,11 @@ Reloader = Reloader = (function() {
   };
 
   Reloader.prototype.collectImportedStylesheets = function(link, styleSheet, result) {
-    var index, rule, rules, _i, _len;
+    var e, index, rule, rules, _i, _len;
     try {
       rules = styleSheet != null ? styleSheet.cssRules : void 0;
-    } catch (e) {
-
+    } catch (_error) {
+      e = _error;
     }
     if (rules && rules.length) {
       for (index = _i = 0, _len = rules.length; _i < _len; index = ++_i) {
@@ -828,14 +825,30 @@ Reloader = Reloader = (function() {
 var LiveReload;
 
 LiveReload = (function() {
-
   function LiveReload(window) {
-    var _this = this;
+    var livelog,
+      _this = this;
     this.window = window;
     this.listeners = {};
     this.plugins = [];
     this.pluginIdentifiers = {};
-    this.console = this.window.location.href.match(/LR-verbose/) && this.window.console && this.window.console.log && this.window.console.error ? this.window.console : {
+    livelog = function(msg) {
+      var b, p, text;
+      console.log("livelog", msg);
+      b = document.getElementsByTagName('body');
+      p = document.createElement("p");
+      text = document.createTextNode(msg);
+      p.appendChild(text);
+      return b[0].appendChild(p);
+    };
+    this.console = this.window.location.href.match(/LR-verbose/) && this.window.console && this.window.console.log && this.window.console.error ? this.window.console : this.window.location.href.match(/LiveTest/) ? {
+      log: function(msg) {
+        return livelog(msg);
+      },
+      error: function(msg) {
+        return livelog(msg);
+      }
+    } : {
       log: function() {},
       error: function() {}
     };
@@ -958,7 +971,7 @@ LiveReload = (function() {
       _reloader: this.reloader,
       _connector: this.connector,
       console: this.console,
-      Timer: Timer,
+      Timer: new Timer,
       generateCacheBustUrl: function(url) {
         return _this.reloader.generateCacheBustUrl(url);
       }
@@ -996,7 +1009,7 @@ LiveReload = (function() {
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       plugin = _ref[_i];
       if (plugin.constructor.identifier === message.identifier) {
-        _results.push(plugin != null ? typeof plugin.processCommand === "function" ? plugin.processCommand(message) : void 0 : void 0);
+        _results.push(plugin != null ? typeof plugin.processCommand === "function" ? plugin.processCommand(message.payload) : void 0 : void 0);
       } else {
         _results.push(void 0);
       }
@@ -1012,7 +1025,6 @@ var LiveReloadPluginSocket, SocketPlugin,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 SocketPlugin = (function() {
-
   SocketPlugin.identifier = 'socket';
 
   SocketPlugin.version = '1.0';
@@ -1021,9 +1033,7 @@ SocketPlugin = (function() {
     this.window = window;
     this.host = host;
     this.sendCommand = __bind(this.sendCommand, this);
-
     this.processCommand = __bind(this.processCommand, this);
-
   }
 
   SocketPlugin.prototype.processCommand = function(msg) {
@@ -1049,7 +1059,6 @@ LiveReloadPluginSocket = window.LiveReloadPluginSocket = SocketPlugin;
 var LessPlugin, LiveReloadPluginLess;
 
 LessPlugin = (function() {
-
   LessPlugin.identifier = 'less';
 
   LessPlugin.version = '1.0';

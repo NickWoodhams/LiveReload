@@ -1,3 +1,4 @@
+# CoffeeScript: bare: true 
 #= require protocol
 
 Version = '2.0.8'

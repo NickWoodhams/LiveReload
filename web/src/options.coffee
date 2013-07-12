@@ -1,3 +1,4 @@
+# CoffeeScript: bare: true 
 
 class Options
   constructor: ->
