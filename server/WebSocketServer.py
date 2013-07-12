@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import logging
 
 try:
     from .WebSocketClient import WebSocketClient
@@ -12,8 +13,8 @@ try:
 except ImportError:
     import socketserver as SocketServer
 
-def log(s):
-    pass
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger('WebSocketClient')
 
 
 class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
@@ -24,21 +25,21 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
             self.server.clients_info.append(client.info)
 
     def addClient(self, client):
-        log('Add to clients table ' + str(client))
+        log.info('Add to clients table ' + str(client))
         self.server.clients.append(client)
 
     def handle(self):
-        log('new client ' + str(self.client_address))
+        log.info('new client ' + str(self.client_address))
         WebSocketClient(self)
 
     def removeClient(self, client):
-        log('Remove from clients table ' + str(client))
+        log.info('Remove from clients table ' + str(client))
         try:
             self.server.clients.remove(client)
             self.updateInfo()
         except Exception:
 
-            # # this is normal because we support both connection protocols
+            # this is normal because we support both connection protocols
 
             pass
 
@@ -90,8 +91,8 @@ class WebSocketServer:
     """
 
     def __init__(self, port, version):
-        self.server = ThreadedTCPServer((''.encode('ascii'), port),
-                ThreadedTCPRequestHandler, version.encode('ascii'))
+        self.server = ThreadedTCPServer((u'', port),
+                ThreadedTCPRequestHandler, version)
 
     def send(self, data):
         self.server.send_all(data)
@@ -100,12 +101,12 @@ class WebSocketServer:
         """
         Stop the server.
         """
-
+        log.info("Stopping server")
         self.server.shutdown()
 
     def start(self):
         """
         Start the server.
         """
-
+        log.info("Starting server")
         self.server.serve_forever()

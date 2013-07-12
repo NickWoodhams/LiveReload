@@ -22,13 +22,11 @@ class WSRequestHandler(SimpleHTTPRequestHandler):
         self,
         req,
         addr,
-        only_upgrade=True,
         ):
 
-        self.only_upgrade = only_upgrade  # only allow upgrades
         SimpleHTTPRequestHandler.__init__(self, req, addr, object())
 
-        # self.server_version = 'LiveReload/1.0'
+        self.server_version = 'LiveReload/1.0'
 
     def do_GET(self):
         if self.headers.get('upgrade') and self.headers.get('upgrade').lower() == 'websocket':
@@ -43,23 +41,17 @@ class WSRequestHandler(SimpleHTTPRequestHandler):
 
             self.last_code = 101
             self.last_message = '101 Switching Protocols'
-        elif self.only_upgrade:
-
-            # Normal web request responses are disabled
-
-            self.last_code = 405
-            self.last_message = '405 Method Not Allowed'
         else:
             req = urlparse.urlparse(self.path)
             _file = LiveReload.API.has_file(req.path)
             _httpcallback = LiveReload.API.has_callback(req.path)
-
             if _httpcallback:
                 try:
-                    func = getattr(sys.modules['LiveReload'].Plugin.getPlugin(_httpcallback['cls']), _httpcallback['name'], None)
+                    plugin = sys.modules['LiveReload'].PluginAPI.PluginFactory.getPlugin(LiveReload.Plugin, _httpcallback['cls'])
+                    func = getattr(plugin, _httpcallback['name'], None)
                     if func:
                         res = func(req)
-                        self.send_response(200, 'OK')
+                        self.send_response(200, res)
                     else:
                         res = "Callback method not found"
                         self.send_response(404, 'Not Found')
@@ -70,29 +62,30 @@ class WSRequestHandler(SimpleHTTPRequestHandler):
                 self.send_header('Content-type', 'text/plain')
                 self.send_header('Content-Length', len(res))
                 self.end_headers()
-                self.wfile.write(bytes(res))
+                self.wfile.write(bytes(res.encode("UTF-8")))
                 return
             elif _file:
-                if isinstance(_file['buffer'], file):
-                    buffer = _file['buffer'].read()
+                if hasattr(_file['buffer'], 'read'):
+                    _buffer = _file['buffer'].read()
                 else:
-                    buffer = _file['buffer']
+                    _buffer = _file['buffer']
 
                 self.send_response(200, 'OK')
                 self.send_header('Content-type', _file['content_type'])
-                self.send_header('Content-Length', len(buffer))
+                self.send_header('Content-Length', len(_buffer))
                 self.end_headers()
-                self.wfile.write(bytes(buffer))
+                self.wfile.write(bytes(_buffer.encode("UTF-8")))
                 return
             else:
 
                 # Disable other requests
-
-                self.send_response(404, 'Not Found')
+                notallowed = "Method not allowed"
+                
+                self.send_response(405, notallowed)
                 self.send_header('Content-type', 'text/plain')
-                self.send_header('Content-Length', len('Method Not Allowed'))
+                self.send_header('Content-Length', len(notallowed))
                 self.end_headers()
-                self.wfile.write(bytes('Method Not Allowed'))
+                self.wfile.write(bytes(notallowed.encode("utf-8")))
                 return
 
     def send_response(self, code, message=None):

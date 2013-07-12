@@ -18,5 +18,7 @@ class SimpleCallbackServer(object):
 
         for callback in self.callbacks:
             if path in callback['path']:
+                print(self.callbacks)
+                print(path)
                 return callback
         return False

@@ -6,23 +6,26 @@ try:
 except ValueError:
     from WSRequestHandler import WSRequestHandler
 
-from base64 import b64encode, b64decode
+from base64 import b64encode, b64decode, encodestring
 import sublime
+import LiveReload
 from struct import pack, unpack_from
 import array
+import sys
 import json
-
+import logging
 try:
     from hashlib import md5, sha1
 except:
     from md5 import md5
     from sha import sha as sha1
 
-s2a = lambda s: [ord(c) for c in s]
+s2a = lambda s: [c for c in s]
 
 
-def log(s):
-    pass
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger('WebSocketClient')
+
 
 class WebSocketClient(object):
 
@@ -46,7 +49,8 @@ Sec-WebSocket-Accept: %s\r
         self.addr = handler.client_address
         self.server = handler.server
         try:
-            self.wsh = WSRequestHandler(self.socket, self.addr, False)
+            
+            self.wsh = WSRequestHandler(self.socket, self.addr)
             if not hasattr(self.wsh, 'headers'):
                 self.close()
             self.headers = self.wsh.headers
@@ -67,22 +71,19 @@ Sec-WebSocket-Accept: %s\r
                                     % self.ver)
 
                 key = self.headers.get('Sec-WebSocket-Key')
-                log(key)
 
                 # Generate the hash value for the accept header
+                accept = b64encode(sha1(key.encode('utf-8') + self.GUID.encode('utf-8')).digest())
 
-                accept = b64encode(sha1(key + self.GUID).digest())
-
-                response = self.server_handshake_hybi % accept
+                response = self.server_handshake_hybi % accept.decode("UTF-8")
                 response += '\r\n'
-                log(response)
-                self.socket.send(response.encode())
+                self.socket.send(response.encode("UTF-8"))
                 self.handler.addClient(self)
                 while 0x1:
                     try:
                         data = self.socket.recv(1024)
                     except Exception as e:
-                        log(e)
+                        log.exception('WebSocket error')
                         break
                     if not data:
                         break
@@ -96,7 +97,7 @@ Sec-WebSocket-Accept: %s\r
 
                 self.close()
         except Exception as e:
-            log(e)
+            log.exception('Decoding error')
             self.close()
 
     @staticmethod
@@ -137,9 +138,7 @@ Sec-WebSocket-Accept: %s\r
         elif payload_len >= 65536:
             header = pack('>BBQ', b1, 0x7f, payload_len)
 
-        log('Encoded: %s' % repr(header + buf))
-
-        return (header + buf, len(header), 0)
+        return (header + buf.encode("utf-8"), len(header), 0)
 
     @staticmethod
     def decode_hybi(buf, base64=False):
@@ -210,14 +209,14 @@ Sec-WebSocket-Accept: %s\r
             f['mask'] = buf[f['hlen']:f['hlen'] + 4]
             f['payload'] = WebSocketClient.unmask(buf, f)
         else:
-            log('Unmasked frame: %s' % repr(buf))
+            log.info('Unmasked frame: %s' % repr(buf))
             f['payload'] = buf[f['hlen'] + has_mask * 4:full_len]
 
         if base64 and f['opcode'] in [0x1, 2]:
             try:
                 f['payload'] = b64decode(f['payload'])
             except:
-                log('Exception while b64decoding buffer: %s'
+                log.exception('Exception while b64decoding buffer: %s'
                     % repr(buf))
                 raise
 
@@ -251,12 +250,11 @@ Sec-WebSocket-Accept: %s\r
         """
 
         try:
-            log(data)
+            log.info(data)
 
             if 'payload' in data:
-                log('payload true')
-                req = json.loads(data.get('payload'))
-                log(req.get('command'))
+                req = json.loads(data.get('payload').decode("UTF-8"))
+                log.info('Command: %s' % req.get('command'))
                 if not self.handshaken:
                     if req.get('command') == 'hello':
                         sublime.set_timeout(lambda : \
@@ -275,10 +273,14 @@ Sec-WebSocket-Accept: %s\r
                                  'url': data.get('payload')}
                     self.handler.updateInfo()
                 else:
-                    LiveReload.API.dispatch_onReceive(req,
-                            self.self.headers.get('Origin'))
+                    try:
+                        sys.modules['LiveReload'].PluginAPI.PluginFactory.dispatch_OnReceive(LiveReload.Plugin, data.get('payload'),
+                                                        self.headers.get('Origin'))
+                    except Exception as e:
+                        log.exception('API error')
+                        
         except Exception as e:
-            log(e)
+            log.exception('receive error')
 
     def _clean(self, msg):
         """

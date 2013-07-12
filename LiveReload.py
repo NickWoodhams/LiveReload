@@ -7,27 +7,32 @@ import sys
 import threading
 import atexit
 import time
-from functools import wraps
+import logging
 
 try:
+
     # Python 3
+
     from .server.WebSocketServer import WebSocketServer
     from .server.SimpleResourceServer import SimpleResourceServer
     from .server.SimpleCallbackServer import SimpleCallbackServer
-    from .server.SimpleWSServer import SimpleWSServer
     from .server.LiveReloadAPI import LiveReloadAPI
     from .server.PluginAPI import PluginInterface as Plugin
     from .server.Settings import Settings
+except ValueError:
 
-except (ValueError):
     # Python 2
+
     from server.WebSocketServer import WebSocketServer
     from server.SimpleResourceServer import SimpleResourceServer
     from server.SimpleCallbackServer import SimpleCallbackServer
-    from server.SimpleWSServer import SimpleWSServer
     from server.LiveReloadAPI import LiveReloadAPI
     from server.PluginAPI import PluginInterface as Plugin
     from server.Settings import Settings
+
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger('LiveReload')
 
 def singleton(cls):
     instances = {}
@@ -40,7 +45,8 @@ def singleton(cls):
     return getinstance
 
 @singleton
-class LiveReload(threading.Thread, SimpleCallbackServer, SimpleWSServer, SimpleResourceServer, LiveReloadAPI):
+class LiveReload(threading.Thread, SimpleCallbackServer,
+    SimpleResourceServer, LiveReloadAPI):
 
     """
     Start the LiveReload, which exposes public api.
@@ -50,7 +56,6 @@ class LiveReload(threading.Thread, SimpleCallbackServer, SimpleWSServer, SimpleR
 
         threading.Thread.__init__(self)
         SimpleCallbackServer.__init__(self)
-        SimpleWSServer.__init__(self)
         SimpleResourceServer.__init__(self)
         LiveReloadAPI.__init__(self)
 
@@ -59,9 +64,15 @@ class LiveReload(threading.Thread, SimpleCallbackServer, SimpleWSServer, SimpleR
         Start LiveReload
         """
 
-        path = os.path.join(sublime.packages_path(), 'LiveReload', 'web', 'dist', 'livereloadjs-sm2.js')
-        local = open(path, 'rU')
-        self.add_static_file('/livereload.js', local.read(), 'text/javascript')
+        livereloadjs = open(os.path.join(sublime.packages_path(), 'LiveReload', 'web'
+                            , 'dist', 'livereloadjs-sm2.js'), 'rU')
+
+        self.add_static_file('/livereload.js', livereloadjs.read(), 'text/javascript')
+
+        index_doc = open(os.path.join(sublime.packages_path(), 'LiveReload', 'web'
+                            , 'test.html'), 'rU')
+
+        self.add_static_file('/index.html', index_doc.read(), 'text/html')
 
         settings = Settings()
         self.port = settings.get('port', 35729)
@@ -69,8 +80,10 @@ class LiveReload(threading.Thread, SimpleCallbackServer, SimpleWSServer, SimpleR
 
         try:
             self.start_server(self.port)
-        except Exception:
-            sublime.error_message('Port(' + str(self.port) + ') is already using, trying ('
+        except Exception as e:
+            log.exception("Port used")
+            sublime.error_message('Port(' + str(self.port)
+                                  + ') is already using, trying ('
                                   + str(self.port + 1) + ')')
             time.sleep(3)
             self.start_server(self.port + 1)
@@ -91,7 +104,8 @@ class LiveReload(threading.Thread, SimpleCallbackServer, SimpleWSServer, SimpleR
 
         self.ws_server.stop()
 
-if not sublime.platform is "build":
+
+if not sublime.platform is 'build':
     try:
         sys.modules['LiveReload'].API
     except Exception:
@@ -106,7 +120,7 @@ def http_callback(callback_f):
 
     Example:
     ::
-    
+
         @LiveReload.http_callback
         def compiled(self, req):
             print req # urlparse object
@@ -114,31 +128,10 @@ def http_callback(callback_f):
 
     """
 
-    callback_f.path = 'http://localhost:35729/callback/%s/%s' % (callback_f.__module__.lower(),
-            callback_f.__name__)
-    sys.modules['LiveReload'].API.callbacks.append({'path': callback_f.path,
+    callback_f.path = 'http://localhost:35729/callback/%s/%s' \
+        % (callback_f.__module__.lower(), callback_f.__name__)
+    sys.modules['LiveReload'
+                ].API.callbacks.append({'path': callback_f.path,
             'name': callback_f.__name__, 'cls': callback_f.__module__})
-    return callback_f
-
-
-def websocket_callback(callback_f):
-    """
-    Add websocket callback to plugin defined function. For example on function call in browser
-    LiveReload.SM2.plugin_name.definedfunction(data) would trigger definedfunction function in plugin or vice verse.
-    Shortly you can call client functions from the server and server functions from client. Everything is JSON encoded
-    by default.
-
-    Example:
-    ::
-
-        @LiveReload.websocket_callback
-        def compiled(self, json):
-            print json # json object
-            return "cool" #to http client {msg: "cool"}
-
-    """
-
-    callback_f.path = 'SM2.%s.%s' % (callback_f.__module__.lower(), callback_f.__name__)
-    sys.modules['LiveReload'].API.ws_callbacks.append({'path': callback_f.path,
-            'name': callback_f.__name__, 'cls': callback_f.__module__})
+    log.info(callback_f.path)
     return callback_f
