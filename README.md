@@ -30,6 +30,8 @@ Enable desired plug-ins via Command Palette (Ctrl+Shift+P) add livereload.js to 
 
 ```<script>document.write('<script src="http://' + (location.host || '${1:localhost}').split(':')[0] + ':${2:35729}/livereload.js?snipver=1"></' + 'script>')</script>```
 
+You can also use one of the extensions listed here http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions-
+
 ## Available plug-ins:
 
  - Compass Preprocessor, compiles .scss, .sass and refreshes page when file is compiled
