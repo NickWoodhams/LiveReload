@@ -1,5 +1,8 @@
 [![Build Status](https://travis-ci.org/dz0ny/LiveReload-sublimetext2.png?branch=devel)](https://travis-ci.org/dz0ny/LiveReload-sublimetext2)
 [![Fattrme](http://api.flattr.com/button/flattr-badge-large.png)](http://flattr.com/thing/1492893/dz0nyLiveReload-sublimetext2-on-GitHub)
+[![Gittip](http://badgr.co/gittip/dz0ny.png)](https://www.gittip.com/dz0ny/)
+
+
 
 # LiveReload for Sublime Text 3
 
