@@ -23,9 +23,9 @@ class SimpleWSCallback(LiveReload.Plugin, sublime_plugin.EventListener):
 
     def on_modified_async(self, view):
       if self.isEnabled:
-        source = view.file_name()
-        with open(source, 'rU') as f:
-          self.sendRaw("socket", f.read())
+        region = sublime.Region(0, view.size())
+        source = view.substr(region)
+        self.sendRaw("socket", source)
         
     def onReceive(self, data, origin):
       print(data)
