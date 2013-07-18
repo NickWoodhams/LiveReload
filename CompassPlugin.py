@@ -21,10 +21,10 @@ class CompassThread(threading.Thread):
     def getLocalOverride(self):
         """
         You can override defaults in sublime-project file
-        
+
         Discussion: https://github.com/dz0ny/LiveReload-sublimetext2/issues/43
-        
-        Example: 
+
+        Example:
 
             "settings": {
               "lrcompass": {
@@ -44,15 +44,14 @@ class CompassThread(threading.Thread):
             return {}
 
     def __init__(self, dirname, on_compile):
-        ##TODO: Proper handler for this
         try:
-            self.dirname = self.getLocalOverride.get('dirname') \
+            self.dirname = self.getLocalOverride().get('dirname') \
             or dirname.replace('\\', '/')
         except Exception as e:
             self.dirname = dirname.replace('\\', '/')
-            
+
         try:
-            self.command = self.getLocalOverride.get('command') or 'compass compile'
+            self.command = self.getLocalOverride().get('command') or 'compass compile'
         except Exception as e:
             self.command = 'compass compile'
 
