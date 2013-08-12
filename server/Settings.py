@@ -25,12 +25,12 @@ class Settings(dict):
             file_object = open(self.file_name)
             data = json.load(file_object)
             file_object.close()
-            for i in range(len(data)):
-                self[data.keys()[i]] = data[data.keys()[i]]
+            for i in data:
+                self[i] = data[i]
             log('LiveReload: Settings loaded')
         except Exception as e:
             log(e)
-            
+
     def save(self):
         file_object = open(self.file_name, 'w')
         json.dump(self, file_object, indent=5)
