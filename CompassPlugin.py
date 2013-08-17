@@ -99,8 +99,10 @@ class CompassThread(threading.Thread):
             else:
                 sublime.error_message("Could not find Compass config.rb. Please check your sublime-project file and adjust settings accordingly!")
                 return
-        cmd = shlex.split(self.command)
-        cmd.append(self.dirname)
+        # cmd = shlex.split(self.command)
+        # cmd.append(self.dirname)
+        # Mac doesn't compile array
+        cmd = self.command + ' "' + self.dirname + '"'
         p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT)
@@ -108,6 +110,7 @@ class CompassThread(threading.Thread):
 
         # Find the file to refresh from the console output
         if compiled:
+            print("Compass : " + compiled.decode("utf-8"));
             matches = re.findall('\S+\.css', compiled.decode("utf-8"))
             if len(matches) > 0:
                 for match in matches:
