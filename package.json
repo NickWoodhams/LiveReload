@@ -7,7 +7,7 @@
             "releases": [
                 {
                     "sublime_text": "*",
-                    "details": "https://github.com/Grafikart/ST3-Preferences/tree/master"
+                    "details": "https://github.com/Grafikart/ST3-LiveReload/tree/master"
                 }
             ]
         }
