@@ -1,0 +1,15 @@
+{
+    "schema_version": "2.0",
+    "packages": [
+        {
+            "name": "LiveReload",
+            "details": "https://github.com/Grafikart/ST3-LiveReload",
+            "releases": [
+                {
+                    "sublime_text": "*",
+                    "details": "https://github.com/Grafikart/ST3-LiveReload/tree/master"
+                }
+            ]
+        }
+    ]
+}
