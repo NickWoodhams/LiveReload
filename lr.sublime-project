@@ -1,0 +1,16 @@
+{
+ "folders": [
+  {
+   "path": "/home/dz0ny/LiveReload"
+  }, 
+  {
+   "path": "/home/dz0ny/.config/sublime-text-2/Packages/"
+  }
+ ], 
+ "settings": {
+  "pylinter": {
+   "pylint_rc": "/home/dz0ny/LiveReload/pylint.rc", 
+   "pylint_path": "/usr/bin/pylint"
+  }
+ }
+}

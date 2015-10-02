@@ -1,0 +1,12 @@
+Changelog:
+
+Please be sure to restart Sublime Text to start using this new version. For more information or how to use this plugin visit https://github.com/dz0ny/LiveReload-sublimetext2/blob/devel/README.md 
+
+New Features
+ - Support v2 of protocol
+ - SublimeText3 support
+ - Plug-in API(you can write your own plug-ins)
+ - Plug-ins:
+  * Simple reload, demonstrates simple reloading
+  * Build plug-in, demonstrates simple callback operation via native call
+
